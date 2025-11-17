@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Max Gum - Personal Portfolio</title>
+    <!-- FIX: Corrected the Tailwind CSS script URL -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     
@@ -151,6 +152,129 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* --- Gemini Modal Styles --- */
+        .gemini-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .gemini-modal-overlay.is-visible {
+            display: flex;
+            opacity: 1;
+        }
+
+        .gemini-modal {
+            background-color: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 32px;
+            box-shadow: 0 10px 40px rgba(168, 138, 83, 0.2);
+            position: relative;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+        .gemini-modal-overlay.is-visible .gemini-modal {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .gemini-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            color: #888888;
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .gemini-modal-close:hover {
+            color: #f0f0f0;
+        }
+
+        .gemini-input, .gemini-textarea {
+            width: 100%;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            color: #f0f0f0;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 16px;
+            transition: border-color 0.2s ease;
+        }
+        .gemini-input:focus, .gemini-textarea:focus {
+            border-color: #a88a53;
+            outline: none;
+        }
+        
+        /* Validation Error Style */
+        .gemini-input.invalid {
+            border-color: #ef4444; /* Red border for error */
+        }
+
+        .gemini-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .gemini-button {
+            background-color: #a88a53;
+            color: #0a0a0a;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .gemini-button:hover {
+            background-color: #c0a068;
+            transform: translateY(-2px);
+        }
+        .gemini-button.secondary {
+            background-color: #222;
+            color: #f0f0f0;
+        }
+        .gemini-button.secondary:hover {
+            background-color: #333;
+        }
+
+        /* Loading Spinner */
+        .gemini-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f0f0f0;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .gemini-button .gemini-spinner {
+            border: 2px solid #0a0a0a;
+            border-top-color: transparent;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
     </style>
 </head>
 <body class="bg-brand-dark">
@@ -256,21 +380,21 @@
                     <div class="reveal" style="transition-delay: 0.3s;">
                         <div class="activity-card">
                             <h3 class="font-serif text-2xl text-white mb-2">Technology Specialization</h3>
-                            <p class="text-brand-gray">Engaged in tech since 2019, with <span id="tech-duration" class="font-bold text-brand-light"></span>+ years of experience. Began with 3D animation, Java, and Python before shifting to hardware, inspiring my focus in electrical engineering.</p>
+                            <p class="text-brand-gray">Engaged in tech since 2019, with <span id="tech-duration" class="font-bold text-brand-light">0</span>+ years of experience. Began with 3D animation, Java, and Python before shifting to hardware, inspiring my focus in electrical engineering.</p>
                         </div>
                     </div>
                     <!-- Swimming -->
                     <div class="reveal" style="transition-delay: 0.4s;">
                         <div class="activity-card">
                             <h3 class="font-serif text-2xl text-white mb-2">Competitive Swimming</h3>
-                            <p class="text-brand-gray">Dedicated <span id="swimming-duration" class="font-bold text-brand-light"></span>+ years to high-level competitive swimming. This pursuit has instilled deep discipline and a relentless drive for improvement, translating to all areas of my life.</p>
+                            <p class="text-brand-gray">Dedicated <span id="swimming-duration" class="font-bold text-brand-light">0</span>+ years to high-level competitive swimming. This pursuit has instilled deep discipline and a relentless drive for improvement, translating to all areas of my life.</p>
                         </div>
                     </div>
                     <!-- Strength & Fitness -->
                     <div class="reveal" style="transition-delay: 0.5s;">
                         <div class="activity-card">
                             <h3 class="font-serif text-2xl text-white mb-2">Strength & Fitness</h3>
-                            <p class="text-brand-gray">Committed to <span id="gym-duration" class="font-bold text-brand-light"></span>+ years of consistent strength training. The gym is my proving ground for building physical and mental resilience, discipline, and a goal-oriented mindset.</p>
+                            <p class="text-brand-gray">Committed to <span id="gym-duration" class="font-bold text-brand-light">0</span>+ years of consistent strength training. The gym is my proving ground for building physical and mental resilience, discipline, and a goal-oriented mindset.</p>
                         </div>
                     </div>
                 </div>
@@ -324,6 +448,17 @@
                         Book a Call
                     </a>
                 </div>
+                
+                <!-- Gemini Feature Button -->
+                <div class="reveal mt-12">
+                     <button id="open-gemini-modal" 
+                             class="inline-block bg-transparent text-brand-gold font-bold py-4 px-10 rounded-full text-lg 
+                                    border-2 border-brand-gold hover:bg-brand-gold hover:text-brand-dark
+                                    transition-all duration-300 shadow-lg shadow-brand-gold/20
+                                    hover:shadow-xl hover:shadow-brand-gold/30 hover:-translate-y-1">
+                        ✨ Smart Inquiry
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -332,7 +467,7 @@
     <!-- Footer -->
     <footer class="py-12 px-6 sm:px-8 border-t border-gray-900">
         <div class="container mx-auto max-w-6xl text-center text-brand-gray flex flex-col sm:flex-row justify-between items-center">
-            <p>&copy; <span id="footer-year"></span> Max Gum. All rights reserved.</p>
+            <p>&copy; <span id="footer-year">2025</span> Max Gum. All rights reserved.</p>
             
             <div class="flex items-center mt-4 sm:mt-0">
                 <!-- LinkedIn Icon -->
@@ -347,6 +482,33 @@
             </div>
         </div>
     </footer>
+
+    <!-- Gemini Modal -->
+    <div id="gemini-modal-overlay" class="gemini-modal-overlay">
+        <div id="gemini-modal" class="gemini-modal">
+            <span id="gemini-modal-close" class="gemini-modal-close">&times;</span>
+            <h3 class="font-serif text-3xl text-white mb-4">✨ AI Inquiry Draft</h3>
+            <p class="text-brand-gray mb-6">Let AI help you draft a professional email to Max. Just state your purpose below.</p>
+            
+            <label for="gemini-input" class="text-brand-gray text-sm mb-2 block">What is your inquiry about?</label>
+            <input id="gemini-input" type="text" class="gemini-input" placeholder="e.g., Marketing services, job offer, collaboration...">
+            
+            <button id="gemini-generate-btn" class="gemini-button w-full">
+                <span id="gemini-generate-text">Generate Draft</span>
+                <div id="gemini-generate-loader" class="gemini-spinner" style="display: none;"></div>
+            </button>
+            
+            <div id="gemini-result-wrapper" class="mt-6" style="display: none;">
+                <label for="gemini-textarea" class="text-brand-gray text-sm mb-2 block">Your Draft:</label>
+                <textarea id="gemini-textarea" class="gemini-textarea" readonly></textarea>
+                <button id="gemini-copy-btn" class="gemini-button secondary">
+                    Copy to Clipboard
+                    <span id="gemini-copy-feedback" class="ml-2" style="display: none;">Copied!</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -408,9 +570,178 @@
             const gymDuration = calculateDuration('2023-06-01');
             const techDuration = calculateDuration('2019-01-01');
 
-            document.getElementById('swimming-duration').textContent = swimmingDuration;
-            document.getElementById('gym-duration').textContent = gymDuration;
-            document.getElementById('tech-duration').textContent = techDuration;
+            if(document.getElementById('swimming-duration')) {
+                document.getElementById('swimming-duration').textContent = swimmingDuration;
+            }
+            if(document.getElementById('gym-duration')) {
+                document.getElementById('gym-duration').textContent = gymDuration;
+            }
+            if(document.getElementById('tech-duration')) {
+                document.getElementById('tech-duration').textContent = techDuration;
+            }
+
+            // --- Gemini Modal Logic ---
+            const modalOverlay = document.getElementById('gemini-modal-overlay');
+            const modal = document.getElementById('gemini-modal');
+            const openBtn = document.getElementById('open-gemini-modal');
+            const closeBtn = document.getElementById('gemini-modal-close');
+            
+            const generateBtn = document.getElementById('gemini-generate-btn');
+            const generateText = document.getElementById('gemini-generate-text');
+            const generateLoader = document.getElementById('gemini-generate-loader');
+            
+            const inputField = document.getElementById('gemini-input');
+            const resultWrapper = document.getElementById('gemini-result-wrapper');
+            const resultTextarea = document.getElementById('gemini-textarea');
+            const copyBtn = document.getElementById('gemini-copy-btn');
+            const copyFeedback = document.getElementById('gemini-copy-feedback');
+
+            const API_KEY = ""; // Per instructions, leave empty.
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+            
+            // Open Modal
+            if (openBtn) {
+                openBtn.addEventListener('click', () => {
+                    modalOverlay.classList.add('is-visible');
+                });
+            }
+
+            // Close Modal
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeModal);
+            }
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', (e) => {
+                    if (e.target === modalOverlay) {
+                        closeModal();
+                    }
+                });
+            }
+            function closeModal() {
+                if (modalOverlay) {
+                    modalOverlay.classList.remove('is-visible');
+                }
+            }
+
+            // Copy to Clipboard
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    try {
+                        resultTextarea.select();
+                        document.execCommand('copy'); // Use execCommand for iframe compatibility
+                        copyFeedback.style.display = 'inline';
+                        setTimeout(() => {
+                            copyFeedback.style.display = 'none';
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy text: ', err);
+                    }
+                });
+            }
+
+            // Generate Draft
+            if (generateBtn) {
+                generateBtn.addEventListener('click', async () => {
+                    const inquiry = inputField.value.trim();
+                    
+                    // Clear previous validation
+                    inputField.classList.remove('invalid');
+
+                    if (!inquiry) {
+                        // Show validation error
+                        inputField.classList.add('invalid');
+                        setTimeout(() => {
+                            inputField.classList.remove('invalid');
+                        }, 1500); // Remove error style after 1.5s
+                        return;
+                    }
+
+                    setLoading(true);
+
+                    const systemPrompt = `You are a professional assistant for Max Gum, an entrepreneur and engineering student. 
+                    Your task is to draft a concise, polite, and professional initial email to Max based on a user's stated purpose. 
+                    The user is a visitor on Max's portfolio. 
+                    The draft should be ready to be copied and sent. 
+                    - Address it "Hi Max,".
+                    - Briefly state the purpose, based on the user's input.
+                    - Keep it to 2-3 short sentences.
+                    - End with a polite closing like "Best regards,".
+                    - Do NOT include a placeholder for the sender's name (e.g., "[Your Name]"). The user will add that themselves.`;
+                    
+                    const userQuery = `The user's stated purpose is: "${inquiry}". Please draft the email.`;
+
+                    const payload = {
+                        contents: [{ parts: [{ text: userQuery }] }],
+                        systemInstruction: {
+                            parts: [{ text: systemPrompt }]
+                        },
+                    };
+
+                    try {
+                        const response = await fetchWithBackoff(API_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`API request failed with status ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        const candidate = result.candidates?.[0];
+                        if (candidate && candidate.content?.parts?.[0]?.text) {
+                            const text = candidate.content.parts[0].text;
+                            resultTextarea.value = text;
+                            resultWrapper.style.display = 'block';
+                        } else {
+                            throw new Error("Invalid response structure from API.");
+                        }
+
+                    } catch (error) {
+                        console.error("Gemini API call failed:", error);
+                        resultTextarea.value = "Sorry, an error occurred while generating the draft. Please try again.";
+                        resultWrapper.style.display = 'block';
+                    } finally {
+                        setLoading(false);
+                    }
+                });
+            }
+
+            function setLoading(isLoading) {
+                if (isLoading) {
+                    if (generateText) generateText.style.display = 'none';
+                    if (generateLoader) generateLoader.style.display = 'block';
+                    if (generateBtn) generateBtn.disabled = true;
+                } else {
+                    if (generateText) generateText.style.display = 'inline';
+                    if (generateLoader) generateLoader.style.display = 'none';
+                    if (generateBtn) generateBtn.disabled = false;
+                }
+            }
+
+            // Exponential backoff retry logic
+            async function fetchWithBackoff(url, options, maxRetries = 4, baseDelay = 1000) {
+                let attempt = 0;
+                while (attempt < maxRetries) {
+                    try {
+                        const response = await fetch(url, options);
+                        if (response.status === 429 || response.status >= 500) {
+                            // Retry on 429 (Too Many Requests) or 5xx server errors
+                            throw new Error(`Retryable error: ${response.status}`);
+                        }
+                        return response; // Success
+                    } catch (error) {
+                        if (attempt === maxRetries - 1) {
+                            throw error; // Max retries reached
+                        }
+                        const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        attempt++;
+                    }
+                }
+                throw new Error("Max retries reached");
+            }
 
         });
     </script>
