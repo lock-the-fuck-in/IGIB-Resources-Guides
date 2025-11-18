@@ -20,9 +20,8 @@
     <!-- Load Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
-    <!-- Custom Tailwind Configuration (For layout utilities) -->
+    <!-- Custom Tailwind Configuration -->
     <script>
-        // FIX: Check if tailwind exists before configuring to prevent ReferenceError
         if (typeof tailwind !== 'undefined') {
             tailwind.config = {
                 theme: {
@@ -37,8 +36,10 @@
                             'brand-gray': '#888888',
                             'brand-accent': '#a88a53',
                             'duolingo-green': '#58cc02',
+                        },
+                        cursor: {
+                            'none': 'none',
                         }
-                        // Animations moved to CSS for reliability
                     }
                 }
             }
@@ -47,7 +48,7 @@
         }
     </script>
 
-    <!-- CORE STYLES (Works even if Tailwind fails) -->
+    <!-- CORE STYLES -->
     <style>
         /* Base Reset */
         body {
@@ -59,27 +60,52 @@
             color: #f5f5f5;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            cursor: auto; /* System cursor */
         }
 
-        a { color: inherit; text-decoration: none; }
+        /* Migmag Special Branding */
+        .migmag-link {
+            font-weight: 800;
+            color: #a88a53;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            animation: pulse-gold-text 2s infinite ease-in-out;
+        }
+        .migmag-link:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #a88a53;
+        }
+
+        /* Custom Cursor Follower (Ring Only) */
+        #cursor-follower {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(168, 138, 83, 0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.3s, height 0.3s, border-color 0.3s, background-color 0.3s, left 0.1s ease-out, top 0.1s ease-out;
+        }
         
-        /* Safety sizing for icons (Prevents the "Huge Logo" bug) */
-        svg {
-            max-width: 100%;
-            vertical-align: middle;
+        body.hovering #cursor-follower {
+            width: 50px;
+            height: 50px;
+            border-color: #a88a53;
+            border-width: 2px;
+            background-color: rgba(168, 138, 83, 0.05);
         }
-        .icon-safe {
-            width: 2rem; /* 32px */
-            height: 2rem;
-        }
-        .icon-small {
-            width: 1.25rem; /* 20px */
-            height: 1.25rem;
-        }
-        .icon-xs {
-            width: 0.75rem; /* 12px */
-            height: 0.75rem;
-        }
+
+        /* Safety Sizing for SVGs */
+        svg { max-width: 100%; vertical-align: middle; }
+        .icon-safe { width: 2rem; height: 2rem; }
+        .icon-small { width: 1.25rem; height: 1.25rem; }
+        .icon-xs { width: 0.75rem; height: 0.75rem; }
 
         /* Animations */
         @keyframes animatedGradient {
@@ -87,7 +113,6 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
         @keyframes fadeInDown {
             0% { opacity: 0; transform: translateY(-20px); }
             100% { opacity: 1; transform: translateY(0); }
@@ -112,15 +137,18 @@
             0%, 100% { box-shadow: 0 0 5px rgba(168, 138, 83, 0.1), inset 0 0 0 1px rgba(168, 138, 83, 0.1); border-color: rgba(168, 138, 83, 0.3); }
             50% { box-shadow: 0 0 15px rgba(168, 138, 83, 0.3), inset 0 0 0 1px rgba(168, 138, 83, 0.5); border-color: rgba(168, 138, 83, 0.8); }
         }
+        @keyframes pulse-gold-text {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; text-shadow: 0 0 8px rgba(168, 138, 83, 0.3); }
+        }
 
-        /* Animation Utility Classes */
         .animate-fade-in-down { animation: fadeInDown 1s ease-out forwards; }
         .animate-fade-in-up { animation: fadeInUp 1s ease-out forwards; }
         .animate-subtle-glow { animation: subtleGlow 4s ease-in-out infinite; }
         .animate-float-up { animation: floatUp 3.5s ease-in-out infinite; }
         .animate-float-down { animation: floatDown 3.5s ease-in-out infinite; }
 
-        /* Header scroll effect */
+        /* Header */
         #main-header { transition: background-color 0.3s ease-in-out; }
         #main-header.scrolled {
             background-color: rgba(10, 10, 10, 0.95);
@@ -130,7 +158,24 @@
             padding-bottom: 1rem;
         }
 
-        /* Video & Hero Components */
+        /* INTRO OVERLAY (Fixed Layer) */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh; 
+            z-index: 40; 
+            overflow: hidden;
+            will-change: transform, opacity;
+            pointer-events: none; 
+        }
+        
+        body.at-top #intro-overlay {
+            pointer-events: auto;
+        }
+
         .hero-video-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0;
         }
@@ -140,12 +185,33 @@
         }
         .hero-content { position: relative; z-index: 2; }
         
-        #hero-section {
+        #intro-overlay {
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
             mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
         }
 
-        /* UI Components */
+        /* SCROLL SPACER */
+        #scroll-spacer {
+            height: 100vh; 
+            width: 100%;
+            pointer-events: none;
+        }
+
+        /* About Section Animations */
+        #about {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out; 
+            will-change: opacity, transform;
+        }
+        
+        @media (scripting: none) {
+            #intro-overlay { display: none; }
+            #scroll-spacer { display: none; }
+            #about { opacity: 1; transform: none; }
+        }
+
+        /* UI Elements */
         .animated-line {
             width: 0; height: 2px; background-color: #a88a53; transition: width 1s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
@@ -272,14 +338,17 @@
 </head>
 <body class="font-sans antialiased text-base sm:text-lg">
 
+    <!-- Custom Cursor Elements (Follower Only) -->
+    <div id="cursor-follower"></div>
+
     <!-- Header / Navigation -->
     <header id="main-header" class="fixed top-0 left-0 w-full p-6 sm:p-8 z-50">
         <div class="container mx-auto max-w-6xl flex justify-between items-center">
             <a href="#" class="font-serif text-2xl font-bold text-white transition-colors hover:text-brand-accent">MG/</a>
             <nav class="hidden md:flex space-x-8">
                 <a href="#about" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">About</a>
-                <a href="#education" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">Education</a>
                 <a href="#ventures" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">Ventures</a>
+                <a href="#education" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">Education</a>
                 <a href="#activities" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">Activities</a>
                 <a href="#contact" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">Contact</a>
             </nav>
@@ -295,14 +364,14 @@
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="fixed top-0 left-0 w-full h-full bg-brand-dark flex flex-col justify-center items-center space-y-8 z-40 transform -translate-x-full transition-transform duration-300 ease-in-out">
         <a href="#about" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">About</a>
-        <a href="#education" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">Education</a>
         <a href="#ventures" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">Ventures</a>
+        <a href="#education" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">Education</a>
         <a href="#activities" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">Activities</a>
         <a href="#contact" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">Contact</a>
     </div>
 
-    <!-- Hero Section -->
-    <section id="hero-section" class="h-screen min-h-[500px] sm:min-h-[700px] w-full flex flex-col justify-center items-center p-6 sm:p-8 relative overflow-hidden">
+    <!-- FIXED HERO OVERLAY (Push Away Effect) -->
+    <div id="intro-overlay" class="flex flex-col justify-center items-center p-6 sm:p-8">
         <div class="hero-video-container">
             <video class="hero-video" 
                    poster="https://placehold.co/1920x1080/0a0a0a/111111?text=Loading+Video..." 
@@ -313,15 +382,15 @@
         </div>
 
         <div class="hero-content container mx-auto max-w-6xl text-center">
-            <h1 class="font-serif text-5xl sm:text-7xl md:text-9xl font-bold text-white animate-fade-in-down animate-subtle-glow" style="animation-delay: 0.2s;">
+            <h1 class="font-serif text-5xl sm:text-7xl md:text-9xl font-bold text-white animate-subtle-glow">
                 <span class="inline-block animate-float-up">Max</span>
                 <span class="inline-block animate-float-down">Gum</span>
             </h1>
-            <p class="font-sans text-lg sm:text-xl md:text-2xl text-brand-light opacity-90 animate-fade-in-down mb-8 mt-4" style="animation-delay: 0.5s;">
+            <p class="font-sans text-lg sm:text-xl md:text-2xl text-brand-light opacity-90 mb-8 mt-4">
                 Student Entrepreneur. Founder. Engineer in Training.
             </p>
             
-            <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.8s;">
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
                 <a href="https://www.linkedin.com/in/maxgum/" target="_blank" rel="noopener noreferrer" 
                    class="hero-btn group relative px-8 py-3 overflow-hidden font-bold rounded-full bg-white text-brand-dark shadow-lg transition-all hover:bg-brand-accent hover:text-white text-center">
                     <span class="relative z-10 flex items-center justify-center gap-2">
@@ -329,219 +398,227 @@
                         LinkedIn
                     </span>
                 </a>
-                <a href="https://migmag-hvac-and-elevator.dorik.io/" target="_blank" rel="noopener noreferrer" 
-                   class="hero-btn group relative px-8 py-3 overflow-hidden font-bold rounded-full border-2 border-brand-accent text-brand-accent shadow-lg transition-all hover:bg-brand-accent hover:text-brand-dark text-center">
+                <!-- Migmag Button -->
+                <a href="#" target="_blank" rel="noopener noreferrer" 
+                   class="hero-btn group relative px-8 py-3 overflow-hidden font-bold rounded-full border-2 border-brand-accent text-brand-accent shadow-lg transition-all hover:bg-brand-accent hover:text-brand-dark text-center migmag-link">
                     <span class="relative z-10">Visit Migmag</span>
                 </a>
             </div>
         </div>
         
-        <div class="hero-content absolute bottom-10 left-1/2 -translate-x-1/2 animate-fade-in-down" style="animation-delay: 1s;">
+        <div class="hero-content absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
             <a href="#about" class="text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 icon-safe animate-bounce">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 icon-safe">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                 </svg>
             </a>
         </div>
-    </section>
+    </div>
 
-    <!-- About Section -->
-    <section id="about" class="py-20 md:py-32 px-6 sm:px-8">
-        <div class="container mx-auto max-w-6xl">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
-                <div class="md:col-span-1 reveal flex flex-col items-center md:items-start">
-                    <div class="profile-image-container">
-                        <img src="assets/profile-image.jpg" 
-                             alt="Max Gum profile picture"
-                             onerror="this.src='https://placehold.co/200x200/1a1a1a/333333?text=Image+Error';">
+    <!-- MAIN CONTENT WRAPPER -->
+    <div id="main-content" class="relative z-20">
+        
+        <!-- Spacer to allow scroll-based push effect -->
+        <div id="scroll-spacer"></div>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 md:py-24 px-6 sm:px-8 bg-gradient-to-b from-transparent via-black/80 to-transparent">
+            <div class="container mx-auto max-w-6xl">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
+                    <div class="md:col-span-1 reveal flex flex-col items-center md:items-start">
+                        <div class="profile-image-container">
+                            <img src="assets/profile-image.jpg" 
+                                 alt="Max Gum profile picture"
+                                 onerror="this.src='https://placehold.co/200x200/1a1a1a/333333?text=Image+Error';">
+                        </div>
+                        <h2 class="font-serif text-4xl font-bold text-white mb-4 text-center md:text-left">About Me</h2>
+                        <div class="animated-line"></div>
                     </div>
-                    <h2 class="font-serif text-4xl font-bold text-white mb-4 text-center md:text-left">About Me</h2>
+
+                    <div class="md:col-span-2 reveal" style="transition-delay: 0.2s;">
+                        <p class="text-base sm:text-lg md:text-xl text-brand-light mb-6 leading-relaxed">
+                            An ambitious and disciplined student from Poland, I'm a graduate of the International Baccalaureate (IB) program now pursuing a Bachelor's degree in Electrical Engineering at Warsaw University of Technology. My studies are my foundation, but my focus extends sharply into business, entrepreneurship, and sales.
+                        </p>
+                        <p class="text-base sm:text-lg md:text-xl text-brand-light mb-6 leading-relaxed">
+                            Born in Warsaw, my global journey began early. I spent five years in New York City before returning to Poland and later moving to Istanbul. There, I attended a private British school, an experience that broadened my horizons and introduced me to diverse industries. This exposure inspired me to take my first bold step: launching my own venture, <a href="#" class="migmag-link">Migmag</a>.
+                        </p>
+                        <p class="text-base sm:text-lg md:text-xl text-brand-light leading-relaxed">
+                            I am committed to developing real-world skills, taking initiative, and turning ideas into action. Whether in my engineering studies, my entrepreneurial projects, or my athletic pursuits, I am always pushing to grow, improve, and go beyond my comfort zones.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ventures & Focus Section (Moved UP as requested) -->
+        <section id="ventures" class="py-16 md:py-24 px-6 sm:px-8">
+            <div class="container mx-auto max-w-6xl">
+                <div class="reveal mb-12">
+                    <h2 class="font-serif text-4xl font-bold text-white mb-4">Ventures & Focus</h2>
                     <div class="animated-line"></div>
                 </div>
 
-                <div class="md:col-span-2 reveal" style="transition-delay: 0.2s;">
-                    <p class="text-base sm:text-lg md:text-xl text-brand-light mb-6 leading-relaxed">
-                        An ambitious and disciplined student from Poland, I'm a graduate of the International Baccalaureate (IB) program now pursuing a Bachelor's degree in Electrical Engineering at Warsaw University of Technology. My studies are my foundation, but my focus extends sharply into business, entrepreneurship, and sales.
-                    </p>
-                    <p class="text-base sm:text-lg md:text-xl text-brand-light mb-6 leading-relaxed">
-                        Born in Warsaw, my global journey began early. I spent five years in New York City before returning to Poland and later moving to Istanbul. There, I attended a private British school, an experience that broadened my horizons and introduced me to diverse industries. This exposure inspired me to take my first bold step: launching my own venture, Migmag.
-                    </p>
-                    <p class="text-base sm:text-lg md:text-xl text-brand-light leading-relaxed">
-                        I am committed to developing real-world skills, taking initiative, and turning ideas into action. Whether in my engineering studies, my entrepreneurial projects, or my athletic pursuits, I am always pushing to grow, improve, and go beyond my comfort zones.
-                    </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                    <div class="md:col-span-1">
+                        <h3 class="font-serif text-3xl text-white"><a href="#" class="migmag-link">Migmag</a></h3>
+                        <span class="text-brand-gray text-lg">Founder & CEO</span>
+                    </div>
+                    <div class="md:col-span-2">
+                        <p class="text-lg sm:text-xl text-brand-light mb-6 leading-relaxed">
+                            As the founder of <a href="#" class="migmag-link">Migmag</a>, I specialize in social media business advertisement and lead generation. My mission is to empower smaller businesses, enabling them to thrive and make a lasting impact within their industries.
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-badge">Social Media Marketing</span>
+                            <span class="skill-badge">Lead Generation</span>
+                            <span class="skill-badge">FB Advertise</span>
+                            <span class="skill-badge">Email Copywriting</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="md:col-span-1">
+                        <h3 class="font-serif text-3xl text-white">Enactus PW</h3>
+                        <span class="text-brand-gray text-lg">Project Leader</span>
+                    </div>
+                    <div class="md:col-span-2">
+                        <p class="text-lg sm:text-xl text-brand-light mb-6 leading-relaxed">
+                            As an active member and project leader at Enactus PW, I develop innovative projects that have a real-world impact. This role sharpens my leadership skills and allows me to apply entrepreneurial thinking to solve complex challenges.
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-badge">Project Management</span>
+                            <span class="skill-badge">Leadership</span>
+                            <span class="skill-badge">Social Entrepreneurship</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Education Section -->
-    <section id="education" class="py-20 px-6 sm:px-8 bg-gradient-to-b from-transparent via-black/50 to-transparent">
-        <div class="container mx-auto max-w-6xl">
-            <div class="reveal mb-12 text-center">
-                <div class="inline-block p-3 rounded-full border-2 border-brand-accent mb-4 text-brand-accent">
-                     <!-- ADDED icon-safe class -->
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 icon-safe">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 0 0-.491 6.347A48.627 48.627 0 0 1 12 20.904a48.627 48.627 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.57 50.57 0 0 0-2.658-.813A59.905 59.905 0 0 1 12 3.493a59.902 59.902 0 0 1 10.499 5.216 50.552 50.552 0 0 0-2.658.814m-15.482 0A50.55 50.55 0 0 1 12 13.489a50.55 50.55 0 0 1 6.466-1.254m-12.552 0a50.55 50.55 0 0 1-6.61 1.612m6.61-1.612A59.9 59.9 0 0 1 12 13.489a59.9 59.9 0 0 1 5.38-1.726m-5.38 1.726a25.5 25.5 0 0 1-2.577 3.916m2.577-3.916a25.5 25.5 0 0 0 2.577 3.916" />
-                      </svg>
-                </div>
-                <h2 id="academic-heading" class="font-serif text-4xl font-bold text-white mb-2">Academic Background</h2>
-                <div class="w-20 h-1 bg-brand-accent mx-auto mt-4"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- BISI -->
-                <div class="reveal academic-card" style="transition-delay: 0.2s;">
-                    <h3 class="font-serif text-xl text-white mb-2">British Int. School Istanbul</h3>
-                    <p class="text-brand-accent font-bold mb-4">2019 - 2025</p>
-                    <p class="text-brand-gray mb-4 text-sm leading-relaxed">
-                        Achieved top 10% global results in the International Baccalaureate (IB) program (2025). Successfully completed IGCSEs in 2023 with distinction.
-                    </p>
-                    <a href="https://www.bisistanbul.org/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-white hover:text-brand-accent transition-colors">
-                        Visit Website 
-                        <svg class="w-3 h-3 ml-2 icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                    </a>
+        <!-- Education Section -->
+        <section id="education" class="py-16 md:py-24 px-6 sm:px-8 bg-gradient-to-b from-transparent via-black/50 to-transparent">
+            <div class="container mx-auto max-w-6xl">
+                <div class="reveal mb-12 text-center">
+                    <div class="inline-block p-3 rounded-full border-2 border-brand-accent mb-4 text-brand-accent">
+                         <!-- ADDED icon-safe class -->
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 icon-safe">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 0 0-.491 6.347A48.627 48.627 0 0 1 12 20.904a48.627 48.627 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.57 50.57 0 0 0-2.658-.813A59.905 59.905 0 0 1 12 3.493a59.902 59.902 0 0 1 10.499 5.216 50.552 50.552 0 0 0-2.658.814m-15.482 0A50.55 50.55 0 0 1 12 13.489a50.55 50.55 0 0 1 6.466-1.254m-12.552 0a50.55 50.55 0 0 1-6.61 1.612m6.61-1.612A59.9 59.9 0 0 1 12 13.489a59.9 59.9 0 0 1 5.38-1.726m-5.38 1.726a25.5 25.5 0 0 1-2.577 3.916m2.577-3.916a25.5 25.5 0 0 0 2.577 3.916" />
+                          </svg>
+                    </div>
+                    <h2 id="academic-heading" class="font-serif text-4xl font-bold text-white mb-2">Academic Background</h2>
+                    <div class="w-20 h-1 bg-brand-accent mx-auto mt-4"></div>
                 </div>
 
-                <!-- WUT -->
-                <div class="reveal academic-card" style="transition-delay: 0.4s;">
-                    <h3 class="font-serif text-xl text-white mb-2">Warsaw Univ. of Technology</h3>
-                    <p class="text-brand-accent font-bold mb-4">Current</p>
-                    <p class="text-brand-gray mb-4 text-sm leading-relaxed">
-                        Pursuing a Bachelor's degree in Electrical Engineering at Poland's premier technical university. Focusing on advanced hardware systems.
-                    </p>
-                    <a href="https://www.pw.edu.pl/engpw" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-white hover:text-brand-accent transition-colors">
-                        Visit Website
-                        <svg class="w-3 h-3 ml-2 icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                    </a>
-                </div>
-                
-                <!-- Spanish DELE B1 -->
-                <div class="reveal academic-card" style="transition-delay: 0.6s;">
-                    <h3 class="font-serif text-xl text-white mb-2">Spanish DELE Certification</h3>
-                    <p class="text-brand-accent font-bold mb-4">2024 - Level B1</p>
-                    <p class="text-brand-gray mb-4 text-sm leading-relaxed">
-                        Achieved B1 fluency in the DELE program, demonstrating intermediate competence and ability to navigate diverse situations in Spanish.
-                    </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- BISI -->
+                    <div class="reveal academic-card" style="transition-delay: 0.2s;">
+                        <h3 class="font-serif text-xl text-white mb-2">British Int. School Istanbul</h3>
+                        <p class="text-brand-accent font-bold mb-4">2019 - 2025</p>
+                        <p class="text-brand-gray mb-4 text-sm leading-relaxed">
+                            Achieved top 10% global results in the International Baccalaureate (IB) program (2025). Successfully completed IGCSEs in 2023 with distinction.
+                        </p>
+                        <a href="https://www.bisistanbul.org/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-white hover:text-brand-accent transition-colors">
+                            Visit Website 
+                            <svg class="w-3 h-3 ml-2 icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                    </div>
+
+                    <!-- WUT -->
+                    <div class="reveal academic-card" style="transition-delay: 0.4s;">
+                        <h3 class="font-serif text-xl text-white mb-2">Warsaw Univ. of Technology</h3>
+                        <p class="text-brand-accent font-bold mb-4">Current</p>
+                        <p class="text-brand-gray mb-4 text-sm leading-relaxed">
+                            Pursuing a Bachelor's degree in Electrical Engineering at Poland's premier technical university. Focusing on advanced hardware systems.
+                        </p>
+                        <a href="https://www.pw.edu.pl/engpw" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-white hover:text-brand-accent transition-colors">
+                            Visit Website
+                            <svg class="w-3 h-3 ml-2 icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                    </div>
                     
-                    <!-- Duolingo Progress Bar -->
-                    <div class="mt-4 relative">
-                         <div class="flex justify-between text-xs text-white mb-1">
-                             <span class="font-bold text-duolingo-green">Duolingo</span>
-                             <span><span id="duolingo-streak-display">Streak: 800+</span> <span class="text-gray-500 ml-1">(Top 0.1%)</span></span> 
-                         </div>
-                         <div class="relative w-full bg-gray-800 rounded-full h-3 border border-gray-700" id="progress-container">
-                             <div id="duolingo-progress-fill" class="bg-duolingo-green h-3 rounded-full transition-all ease-out" style="width: 0%;"></div>
-                         </div>
-                         <div id="duolingo-score-text" class="text-right text-xs text-gray-500 mt-1">Score: 105/160 (Top 3%)</div>
+                    <!-- Spanish DELE B1 -->
+                    <div class="reveal academic-card" style="transition-delay: 0.6s;">
+                        <h3 class="font-serif text-xl text-white mb-2">Spanish DELE Certification</h3>
+                        <p class="text-brand-accent font-bold mb-4">2024 - Level B1</p>
+                        <p class="text-brand-gray mb-4 text-sm leading-relaxed">
+                            Achieved B1 fluency in the DELE program, demonstrating intermediate competence and ability to navigate diverse situations in Spanish.
+                        </p>
+                        
+                        <!-- Duolingo Progress Bar -->
+                        <div class="mt-4 relative">
+                             <div class="flex justify-between text-xs text-white mb-1">
+                                 <span class="font-bold text-duolingo-green">Duolingo</span>
+                                 <span><span id="duolingo-streak-display">Streak: 800+</span> <span class="text-gray-500 ml-1">(Top 0.1%)</span></span> 
+                             </div>
+                             <div class="relative w-full bg-gray-800 rounded-full h-3 border border-gray-700" id="progress-container">
+                                 <div id="duolingo-progress-fill" class="bg-duolingo-green h-3 rounded-full transition-all ease-out" style="width: 0%;"></div>
+                             </div>
+                             <div id="duolingo-score-text" class="text-right text-xs text-gray-500 mt-1">Score: 105/160 (Top 3%)</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Activities Section -->
+        <section id="activities" class="py-16 md:py-24 px-6 sm:px-8">
+            <div class="container mx-auto max-w-6xl">
+                <div class="reveal mb-12">
+                    <h2 class="font-serif text-4xl font-bold text-white mb-4">Activities & Societies</h2>
+                    <div class="animated-line"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="reveal activity-card" style="transition-delay: 0.3s;">
+                        <h3 class="font-serif text-2xl text-white mb-2">Technology Specialization</h3>
+                        <p class="text-brand-gray">Engaged in tech since 2019, with <span id="tech-duration" class="font-bold text-brand-light"></span>+ years of experience. Began with 3D animation, Java, and Python before shifting to hardware, inspiring my focus in electrical engineering.</p>
+                    </div>
+                    <div class="reveal activity-card" style="transition-delay: 0.4s;">
+                        <h3 class="font-serif text-2xl text-white mb-2">Competitive Swimming</h3>
+                        <p class="text-brand-gray">Dedicating <span class="font-bold text-brand-light">3+</span> years to high-level competition, forging endurance and a relentless pursuit of performance.</p>
+                    </div>
+                    <div class="reveal activity-card" style="transition-delay: 0.5s;">
+                        <h3 class="font-serif text-2xl text-white mb-2">Strength & Fitness</h3>
+                        <p class="text-brand-gray">Committed to <span id="gym-duration" class="font-bold text-brand-light"></span>+ years of rigorous strength training, building a foundation of power and peak physical condition.</p>
                     </div>
                 </div>
-
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Ventures & Focus Section -->
-    <section id="ventures" class="py-20 md:py-32 px-6 sm:px-8">
-        <div class="container mx-auto max-w-6xl">
-            <div class="reveal mb-12">
-                <h2 class="font-serif text-4xl font-bold text-white mb-4">Ventures & Focus</h2>
-                <div class="animated-line"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                <div class="md:col-span-1">
-                    <h3 class="font-serif text-3xl text-white">Migmag</h3>
-                    <span class="text-brand-gray text-lg">Founder & CEO</span>
-                </div>
-                <div class="md:col-span-2">
-                    <p class="text-lg sm:text-xl text-brand-light mb-6 leading-relaxed">
-                        As the founder of Migmag, I specialize in social media business advertisement and lead generation. My mission is to empower smaller businesses, enabling them to thrive and make a lasting impact within their industries.
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 md:py-24 px-6 sm:px-8">
+            <div class="container mx-auto max-w-3xl text-center">
+                <div class="reveal mb-10">
+                    <h2 class="font-serif text-4xl sm:text-5xl font-bold text-white mb-4">Get in Touch</h2>
+                    <p class="text-lg sm:text-xl text-brand-gray leading-relaxed">
+                        Let's connect. I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
                     </p>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="skill-badge">Social Media Marketing</span>
-                        <span class="skill-badge">Lead Generation</span>
-                        <span class="skill-badge">FB Advertise</span>
-                        <span class="skill-badge">Email Copywriting</span>
-                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4 reveal" style="transition-delay: 0.3s;">
+                    <!-- FIXED: Updated email address -->
+                    <a href="mailto:migmagsocial@gmail.com" class="contact-button">Drop a message</a>
+                    <a href="https://calendly.com/migmag/discoverycall" target="_blank" rel="noopener noreferrer" class="contact-button-secondary">Book a Call</a>
                 </div>
             </div>
+        </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="md:col-span-1">
-                    <h3 class="font-serif text-3xl text-white">Enactus PW</h3>
-                    <span class="text-brand-gray text-lg">Project Leader</span>
-                </div>
-                <div class="md:col-span-2">
-                    <p class="text-lg sm:text-xl text-brand-light mb-6 leading-relaxed">
-                        As an active member and project leader at Enactus PW, I develop innovative projects that have a real-world impact. This role sharpens my leadership skills and allows me to apply entrepreneurial thinking to solve complex challenges.
-                    </p>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="skill-badge">Project Management</span>
-                        <span class="skill-badge">Leadership</span>
-                        <span class="skill-badge">Social Entrepreneurship</span>
-                    </div>
+        <!-- Footer -->
+        <footer class="py-12 px-6 sm:px-8">
+            <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center text-center">
+                <p class="text-brand-gray mb-4 sm:mb-0 text-sm sm:text-base">&copy; <span id="current-year"></span> Max Gum. All rights reserved.</p>
+                <div class="flex space-x-6 items-center justify-center mt-4 sm:mt-0">
+                    <a href="https://www.linkedin.com/in/maxgum/" target="_blank" rel="noopener noreferrer" class="text-brand-gray hover:text-brand-accent transition-colors">
+                        <svg class="w-6 h-6 icon-safe" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="sr-only">LinkedIn</span>
+                    </a>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Activities Section -->
-    <section id="activities" class="py-20 md:py-32 px-6 sm:px-8">
-        <div class="container mx-auto max-w-6xl">
-            <div class="reveal mb-12">
-                <h2 class="font-serif text-4xl font-bold text-white mb-4">Activities & Societies</h2>
-                <div class="animated-line"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="reveal activity-card" style="transition-delay: 0.3s;">
-                    <h3 class="font-serif text-2xl text-white mb-2">Technology Specialization</h3>
-                    <p class="text-brand-gray">Engaged in tech since 2019, with <span id="tech-duration" class="font-bold text-brand-light"></span>+ years of experience. Began with 3D animation, Java, and Python before shifting to hardware, inspiring my focus in electrical engineering.</p>
-                </div>
-                <div class="reveal activity-card" style="transition-delay: 0.4s;">
-                    <h3 class="font-serif text-2xl text-white mb-2">Competitive Swimming</h3>
-                    <p class="text-brand-gray">Dedicating <span class="font-bold text-brand-light">3+</span> years to high-level competition, forging endurance and a relentless pursuit of performance.</p>
-                </div>
-                <div class="reveal activity-card" style="transition-delay: 0.5s;">
-                    <h3 class="font-serif text-2xl text-white mb-2">Strength & Fitness</h3>
-                    <p class="text-brand-gray">Committed to <span id="gym-duration" class="font-bold text-brand-light"></span>+ years of rigorous strength training, building a foundation of power and peak physical condition.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-20 md:py-32 px-6 sm:px-8">
-        <div class="container mx-auto max-w-3xl text-center">
-            <div class="reveal mb-10">
-                <h2 class="font-serif text-4xl sm:text-5xl font-bold text-white mb-4">Get in Touch</h2>
-                <p class="text-lg sm:text-xl text-brand-gray leading-relaxed">
-                    Let's connect. I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
-                </p>
-            </div>
-
-            <div class="flex flex-col sm:flex-row justify-center gap-4 reveal" style="transition-delay: 0.3s;">
-                <!-- FIXED: Updated email address -->
-                <a href="mailto:migmagsocial@gmail.com" class="contact-button">Drop a message</a>
-                <a href="https://calendly.com/migmag/discoverycall" target="_blank" rel="noopener noreferrer" class="contact-button-secondary">Book a Call</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="py-12 px-6 sm:px-8">
-        <div class="container mx-auto max-w-6xl flex flex-col sm:flex-row justify-between items-center text-center">
-            <p class="text-brand-gray mb-4 sm:mb-0 text-sm sm:text-base">&copy; <span id="current-year"></span> Max Gum. All rights reserved.</p>
-            <div class="flex space-x-6 items-center justify-center mt-4 sm:mt-0">
-                <a href="https://www.linkedin.com/in/maxgum/" target="_blank" rel="noopener noreferrer" class="text-brand-gray hover:text-brand-accent transition-colors">
-                    <svg class="w-6 h-6 icon-safe" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd"/>
-                    </svg>
-                    <span class="sr-only">LinkedIn</span>
-                </a>
-            </div>
-        </div>
-    </footer>
+        </footer>
+    </div> <!-- End Main Content Wrapper -->
 
     <!-- Floating Chat Widget -->
     <div id="chat-widget-btn" class="chat-widget-btn">
@@ -572,6 +649,121 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
+            // --- Custom Cursor Logic (Ring Follower Only) ---
+            const follower = document.getElementById('cursor-follower');
+
+            if (window.matchMedia("(pointer: fine)").matches) {
+                document.addEventListener('mousemove', (e) => {
+                    follower.style.left = e.clientX + 'px';
+                    follower.style.top = e.clientY + 'px';
+                });
+
+                const interactiveElements = document.querySelectorAll('a, button, input, .activity-card, .academic-card, .migmag-link');
+                interactiveElements.forEach(el => {
+                    el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                    el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+                });
+            }
+
+            // --- Push-Away Opening Animation (Robust Logic) ---
+            const introOverlay = document.getElementById('intro-overlay');
+            const scrollSpacer = document.getElementById('scroll-spacer');
+            const aboutSection = document.getElementById('about'); 
+            let ticking = false; 
+            let lastScrollY = 0;
+            let isAutoScrolling = false;
+            
+            function updateIntroPointerEvents() {
+                 if (window.scrollY < 10) {
+                     document.body.classList.add('at-top');
+                 } else {
+                     document.body.classList.remove('at-top');
+                 }
+            }
+
+            function updateOverlay() {
+                const scrollY = window.scrollY;
+                const spacerHeight = window.innerHeight; 
+                
+                // Calculate progress 0.0 to 1.0
+                // Reduced to 1.0x to make it snappy again
+                let progress = Math.min(scrollY / (spacerHeight * 1.0), 1);
+                
+                updateIntroPointerEvents();
+
+                // Auto-Scroll Trigger at 70%
+                if (progress > 0.7 && scrollY > lastScrollY && !isAutoScrolling && scrollY < spacerHeight) {
+                    isAutoScrolling = true;
+                    
+                    window.scrollTo({
+                        top: spacerHeight,
+                        behavior: 'smooth'
+                    });
+                    
+                    setTimeout(() => {
+                        isAutoScrolling = false;
+                    }, 800);
+                }
+
+                lastScrollY = scrollY;
+
+                if (introOverlay) {
+                    if (progress >= 1) {
+                        introOverlay.style.display = 'none';
+                        // Force reveal if we are past intro
+                        if (aboutSection) {
+                            aboutSection.style.opacity = '1';
+                            aboutSection.style.transform = 'translateY(0)';
+                        }
+                    } else {
+                        introOverlay.style.display = 'flex';
+                        
+                        const scale = 1 + (progress * 2); 
+                        const opacity = 1 - Math.pow(progress, 1.5); 
+                        
+                        introOverlay.style.transform = `scale(${scale}) translate3d(0,0,0)`;
+                        introOverlay.style.opacity = Math.max(0, opacity);
+                        
+                        if (progress > 0.8) {
+                            introOverlay.style.pointerEvents = 'none';
+                        } else {
+                            introOverlay.style.pointerEvents = 'all';
+                        }
+
+                        // Smooth Reveal for About Me
+                        if (aboutSection) {
+                            if (progress > 0.5) {
+                                const revealProgress = (progress - 0.5) / 0.5; 
+                                aboutSection.style.opacity = revealProgress;
+                                const translateY = 60 - (revealProgress * 60);
+                                aboutSection.style.transform = `translateY(${translateY}px)`;
+                            } else {
+                                aboutSection.style.opacity = 0;
+                                aboutSection.style.transform = 'translateY(60px)';
+                            }
+                        }
+                    }
+                }
+                ticking = false;
+            }
+            
+            setTimeout(() => {
+                if (window.scrollY > 100 && aboutSection) {
+                    aboutSection.style.opacity = '1';
+                    aboutSection.style.transform = 'translateY(0)';
+                }
+            }, 500);
+
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(updateOverlay);
+                    ticking = true;
+                }
+            }, { passive: true });
+            
+            updateOverlay();
+
+
             // Set Current Year in Footer
             document.getElementById('current-year').textContent = new Date().getFullYear();
 
@@ -640,16 +832,14 @@
             revealElements.forEach(el => { generalObserver.observe(el); });
             
             // FIX: Confetti & Duolingo Animation (Using IntersectionObserver for mobile support)
-            // Replaced previous 'mouseenter' event listener with this block.
             const educationSection = document.getElementById('education');
             let confettiFired = false;
 
             const educationObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting && !confettiFired) {
-                        confettiFired = true; // Ensure it only runs once
+                        confettiFired = true; 
                         
-                        // 1. Fire Confetti
                         if (window.confetti) {
                             var end = Date.now() + (1.5 * 1000); 
                             var colors = ['#a88a53', '#f5f5f5'];
@@ -660,16 +850,15 @@
                             }());
                         }
                         
-                        // 2. Animate Duolingo Bar
                         if (progressFill) {
                             progressFill.style.width = "0%";
                             progressFill.style.transition = "none";
                             void progressFill.offsetWidth;
                             
-                            progressFill.style.transition = "width 1.5s ease-out";
+                            progressFill.style.transition = "width 4s ease-out";
                             progressFill.style.width = scorePercentage + "%";
                             
-                            const duration = 1500;
+                            const duration = 4000;
                             const startTime = Date.now();
                             
                             function spawnParticles() {
@@ -694,11 +883,10 @@
                             spawnParticles();
                         }
                         
-                        // Stop observing after triggering
                         educationObserver.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.3 }); // Trigger when 30% of the section is visible
+            }, { threshold: 0.3 }); 
 
             if (educationSection) {
                 educationObserver.observe(educationSection);
