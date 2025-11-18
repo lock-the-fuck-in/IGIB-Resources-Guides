@@ -608,7 +608,7 @@
             <button id="close-chat" class="text-gray-400 hover:text-white">&times;</button>
         </div>
         <div id="chat-messages" class="chat-messages">
-            <div class="message bot">Hello! How can I help you today? Ask me for Max's email or about his projects.</div>
+            <div class="message bot">Hello! How can I help you? I can provide Max's email or basic info.</div>
         </div>
         <div class="chat-input-area">
             <input type="text" id="chat-input" class="chat-input" placeholder="Type a question...">
@@ -823,7 +823,7 @@
             }
 
 
-            // --- Chatbot Logic ---
+            // --- Chatbot Logic (Local Rules) ---
             const chatBtn = document.getElementById('chat-widget-btn');
             const chatWindow = document.getElementById('chat-window');
             const closeChat = document.getElementById('close-chat');
@@ -831,36 +831,6 @@
             const chatSend = document.getElementById('chat-send-btn');
             const chatMessages = document.getElementById('chat-messages');
             const typingIndicator = document.getElementById('typing-indicator');
-
-            // IMPORTANT: Put your Gemini API Key here for the live site
-            const API_KEY = "AIzaSyBu5FIXek95ibDixConymz4FQRC3_-IVJk"; 
-            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
-
-            // System Prompt for the AI
-            const SYSTEM_PROMPT = `You are a helpful assistant for Max Gum's personal portfolio website. 
-            Use the following information to answer user queries directly and professionally.
-            If you don't know the answer, say you don't know and suggest contacting Max directly.
-            
-            About Max:
-            - Full Name: Max Gum
-            - Occupation: Student, Entrepreneur, Aspiring Engineer.
-            - Location: Warsaw, Poland.
-            - Education: 
-              1. British International School Istanbul (BISI): IGCSEs (2023), IB Diploma (2025, top 10% global).
-              2. Warsaw University of Technology (WUT): Bachelor's in Electrical Engineering (Current).
-            
-            Ventures:
-            - Migmag: Founder & CEO. Specializes in social media marketing, lead generation, FB ads.
-            - Enactus PW: Project Leader. Social entrepreneurship.
-            
-            Contact:
-            - Email: max@migmag.io (or max.gum@migmag.pl)
-            - LinkedIn: https://www.linkedin.com/in/maxgum/
-            - Website: max-gum.dorik.io (former), current is this portfolio.
-            
-            Key Skills: Sales, Entrepreneurship, Marketing, Engineering, Discipline.
-            Interests: Kickboxing, Swimming (3+ years high level), Gym.
-            `;
 
             function toggleChat() {
                 chatWindow.classList.toggle('active');
@@ -873,8 +843,29 @@
                 chatMessages.appendChild(msgDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
+            
+            // Simple Rule-Based Response Logic
+            function getBotResponse(input) {
+                const lowerInput = input.toLowerCase();
+                
+                if (lowerInput.includes('email') || lowerInput.includes('mail')) {
+                    return "You can reach Max at max@migmag.io or max.gum@migmag.pl.";
+                } else if (lowerInput.includes('contact') || lowerInput.includes('reach')) {
+                    return "Contact Max via email at max@migmag.io or through LinkedIn (link in header).";
+                } else if (lowerInput.includes('linkedin')) {
+                    return "Max's LinkedIn is: https://www.linkedin.com/in/maxgum/";
+                } else if (lowerInput.includes('education') || lowerInput.includes('school') || lowerInput.includes('study') || lowerInput.includes('university')) {
+                    return "Max studied at the British International School Istanbul (IB Diploma) and is currently pursuing Electrical Engineering at Warsaw University of Technology.";
+                } else if (lowerInput.includes('migmag') || lowerInput.includes('company') || lowerInput.includes('business')) {
+                    return "Migmag is Max's venture specializing in social media marketing and lead generation.";
+                } else if (lowerInput.includes('hello') || lowerInput.includes('hi') || lowerInput.includes('hey')) {
+                    return "Hello! How can I assist you today?";
+                } else {
+                    return "I'm a basic assistant. I can tell you about Max's email, LinkedIn, education, or Migmag. For detailed inquiries, please use the contact form.";
+                }
+            }
 
-            async function handleUserMessage() {
+            function handleUserMessage() {
                 const text = chatInput.value.trim();
                 if (!text) return;
 
@@ -882,43 +873,12 @@
                 chatInput.value = '';
                 typingIndicator.style.display = 'block';
 
-                // If no API key is present, fallback to basic rules
-                if (!API_KEY) {
-                    setTimeout(() => {
-                        typingIndicator.style.display = 'none';
-                        let response = "I'm currently in demo mode (no API key). ";
-                        if(text.toLowerCase().includes('email')) response += "Max's email is max@migmag.io.";
-                        else if(text.toLowerCase().includes('contact')) response += "You can contact Max via email or LinkedIn.";
-                        else response += "Please configure the Gemini API key to enable full AI responses.";
-                        appendMessage(response, 'bot');
-                    }, 1000);
-                    return;
-                }
-
-                // Call Gemini API
-                try {
-                    const payload = {
-                        contents: [{ role: "user", parts: [{ text: text }] }],
-                        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }
-                    };
-
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const data = await response.json();
-                    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't process that.";
-                    
+                // Simulate typing delay
+                setTimeout(() => {
                     typingIndicator.style.display = 'none';
+                    const reply = getBotResponse(text);
                     appendMessage(reply, 'bot');
-
-                } catch (error) {
-                    console.error(error);
-                    typingIndicator.style.display = 'none';
-                    appendMessage("Sorry, something went wrong with the connection.", 'bot');
-                }
+                }, 600);
             }
 
             chatBtn.addEventListener('click', toggleChat);
