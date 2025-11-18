@@ -33,6 +33,7 @@
                         'brand-light': '#f5f5f5',
                         'brand-gray': '#888888',
                         'brand-accent': '#a88a53', // Muted gold/bronze accent
+                        'duolingo-green': '#58cc02', // Duolingo brand color
                     },
                     animation: {
                         'fade-in-down': 'fadeInDown 1s ease-out forwards',
@@ -444,32 +445,56 @@
                 <div class="w-20 h-1 bg-brand-accent mx-auto mt-4"></div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- BISI -->
-                <div class="reveal activity-card" style="transition-delay: 0.2s;">
-                    <h3 class="font-serif text-2xl text-white mb-2">British International School Istanbul</h3>
+                <div class="reveal academic-card" style="transition-delay: 0.2s;">
+                    <h3 class="font-serif text-xl text-white mb-2">British Int. School Istanbul</h3>
                     <p class="text-brand-accent font-bold mb-4">2019 - 2025</p>
-                    <p class="text-brand-gray mb-4 leading-relaxed">
-                        Achieved top 10% global results in the International Baccalaureate (IB) program (2025). Successfully completed IGCSEs in 2023 with distinction. Developed a truly international perspective within a rigorous British academic environment.
+                    <p class="text-brand-gray mb-4 text-sm leading-relaxed">
+                        Achieved top 10% global results in the International Baccalaureate (IB) program (2025). Successfully completed IGCSEs in 2023 with distinction.
                     </p>
-                    <a href="https://www.bisistanbul.org/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-sm font-bold text-white hover:text-brand-accent transition-colors">
+                    <a href="https://www.bisistanbul.org/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-white hover:text-brand-accent transition-colors">
                         Visit Website 
-                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        <svg class="w-3 h-3 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
                 </div>
 
                 <!-- WUT -->
-                <div class="reveal activity-card" style="transition-delay: 0.4s;">
-                    <h3 class="font-serif text-2xl text-white mb-2">Warsaw University of Technology</h3>
+                <div class="reveal academic-card" style="transition-delay: 0.4s;">
+                    <h3 class="font-serif text-xl text-white mb-2">Warsaw Univ. of Technology</h3>
                     <p class="text-brand-accent font-bold mb-4">Current</p>
-                    <p class="text-brand-gray mb-4 leading-relaxed">
-                        Pursuing a Bachelor's degree in Electrical Engineering at Poland's premier technical university. Focusing on advanced hardware systems and engineering principles to bridge the gap between technical innovation and business application.
+                    <p class="text-brand-gray mb-4 text-sm leading-relaxed">
+                        Pursuing a Bachelor's degree in Electrical Engineering at Poland's premier technical university. Focusing on advanced hardware systems.
                     </p>
-                    <a href="https://www.pw.edu.pl/engpw" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-sm font-bold text-white hover:text-brand-accent transition-colors">
+                    <a href="https://www.pw.edu.pl/engpw" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-white hover:text-brand-accent transition-colors">
                         Visit Website
-                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        <svg class="w-3 h-3 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
                 </div>
+                
+                <!-- Spanish DELE B1 -->
+                <div class="reveal academic-card" style="transition-delay: 0.6s;">
+                    <h3 class="font-serif text-xl text-white mb-2">Spanish DELE Certification</h3>
+                    <p class="text-brand-accent font-bold mb-4">2024 - Level B1</p>
+                    <p class="text-brand-gray mb-4 text-sm leading-relaxed">
+                        Achieved B1 fluency in the DELE program, demonstrating intermediate competence and ability to navigate diverse situations in Spanish.
+                    </p>
+                    
+                    <!-- Duolingo Progress Bar -->
+                    <div class="mt-4 relative">
+                         <div class="flex justify-between text-xs text-white mb-1">
+                             <span class="font-bold text-duolingo-green">Duolingo</span>
+                             <span><span id="duolingo-streak-display">Streak: 800+</span> <span class="text-gray-500 ml-1">(Top 0.1%)</span></span> 
+                         </div>
+                         <!-- Container with relative positioning for particles -->
+                         <div class="relative w-full bg-gray-800 rounded-full h-3 border border-gray-700" id="progress-container">
+                             <!-- Initial width 0 for JS animation -->
+                             <div id="duolingo-progress-fill" class="bg-duolingo-green h-3 rounded-full transition-all ease-out" style="width: 0%;"></div>
+                         </div>
+                         <div id="duolingo-score-text" class="text-right text-xs text-gray-500 mt-1">Score: 105/160 (Top 3%)</div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -655,6 +680,63 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
         }
 
+        /* Academic Card Style (Pulsating Gold + Star Sprinkle target) */
+        .academic-card {
+            padding: 24px;
+            border: 1px solid #222;
+            background-color: #0a0a0a;
+            border-radius: 12px;
+            height: 100%;
+            transition: transform 0.3s ease;
+            animation: pulse-gold 3s infinite ease-in-out;
+            position: relative; /* For falling stars */
+            overflow: visible; /* Allow stars to fall out */
+        }
+        .academic-card:hover {
+            transform: translateY(-4px);
+        }
+
+        @keyframes pulse-gold {
+            0%, 100% { box-shadow: 0 0 5px rgba(168, 138, 83, 0.1), inset 0 0 0 1px rgba(168, 138, 83, 0.1); border-color: rgba(168, 138, 83, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(168, 138, 83, 0.3), inset 0 0 0 1px rgba(168, 138, 83, 0.5); border-color: rgba(168, 138, 83, 0.8); }
+        }
+        
+        /* Falling Star Style */
+        .falling-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: #a88a53;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 0 4px #a88a53;
+            z-index: 10;
+            animation: fall-fade 1.2s linear forwards;
+        }
+        @keyframes fall-fade {
+            0% { transform: translateY(0); opacity: 0.8; }
+            100% { transform: translateY(30px); opacity: 0; }
+        }
+        
+        /* Duolingo Particle Style */
+        .duo-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: #58cc02;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 20;
+            opacity: 0.8;
+            animation: fade-out-move 0.5s linear forwards;
+        }
+        
+        @keyframes fade-out-move {
+            0% { transform: translate(0, 0); opacity: 0.8; }
+            100% { transform: translate(10px, -5px); opacity: 0; }
+        }
+
         .contact-button {
             display: inline-block;
             background-color: #a88a53;
@@ -699,6 +781,24 @@
             
             // Set Current Year in Footer
             document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // --- MANUAL DUOLINGO CONFIGURATION (Edit these values to update) ---
+            const DUOLINGO_STREAK = "800+"; // Updated streak
+            const DUOLINGO_CURRENT_SCORE = 105; // Updated score
+            const DUOLINGO_MAX_SCORE = 160;     // Max possible score
+            
+            // Calculate percentage width
+            const scorePercentage = (DUOLINGO_CURRENT_SCORE / DUOLINGO_MAX_SCORE) * 100;
+            
+            // Apply Duolingo Config
+            const streakDisplay = document.getElementById('duolingo-streak-display');
+            const progressFill = document.getElementById('duolingo-progress-fill');
+            const scoreText = document.getElementById('duolingo-score-text');
+            const progressContainer = document.getElementById('progress-container');
+            
+            if (streakDisplay) streakDisplay.textContent = "Streak: " + DUOLINGO_STREAK;
+            if (scoreText) scoreText.textContent = "Score: " + DUOLINGO_CURRENT_SCORE + "/" + DUOLINGO_MAX_SCORE + " (Top 3%)";
+
 
             // --- Calculate Durations ---
             function calculateDuration(startDate) {
@@ -769,58 +869,131 @@
                 generalObserver.observe(el);
             });
             
-            // Specific Observer for Confetti (Center of screen)
-            let confettiFired = false;
+            // --- Confetti & Duolingo Animation Logic (On Mouse Enter) ---
             const educationSection = document.getElementById('education');
-            const confettiObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !confettiFired && window.confetti) {
-                         confettiFired = true;
-                         var end = Date.now() + (1.5 * 1000); // 1.5 seconds
-                         
-                         var colors = ['#a88a53', '#f5f5f5'];
-
-                         (function frame() {
-                           confetti({
-                             particleCount: 2,
-                             angle: 60,
-                             spread: 55,
-                             origin: { x: 0 },
-                             colors: colors,
-                             scalar: 0.8, // smaller particles
-                             drift: 0.5, // slight drift
-                             gravity: 0.8 // slow fall
-                           });
-                           confetti({
-                             particleCount: 2,
-                             angle: 120,
-                             spread: 55,
-                             origin: { x: 1 },
-                             colors: colors,
-                             scalar: 0.8,
-                             drift: -0.5,
-                             gravity: 0.8
-                           });
-                         
-                           if (Date.now() < end) {
-                             requestAnimationFrame(frame);
-                           }
-                         }());
-                         
-                         // Disconnect observer after firing once to improve performance
-                         confettiObserver.disconnect();
-                    }
-                });
-            }, {
-                root: null,
-                // This rootMargin triggers intersection when the element enters the middle 20% of the viewport
-                rootMargin: '-10% 0px -10% 0px', 
-                threshold: 0.3
-            });
+            let confettiFired = false;
 
             if (educationSection) {
-                confettiObserver.observe(educationSection);
+                educationSection.addEventListener('mouseenter', () => {
+                    if (!confettiFired) {
+                        confettiFired = true;
+                        
+                        // 1. Fire Confetti
+                        if (window.confetti) {
+                            var end = Date.now() + (1.5 * 1000); 
+                            var colors = ['#a88a53', '#f5f5f5'];
+
+                            (function frame() {
+                              confetti({
+                                particleCount: 2,
+                                angle: 60,
+                                spread: 55,
+                                origin: { x: 0 },
+                                colors: colors,
+                                scalar: 0.8,
+                                drift: 0.5,
+                                gravity: 0.8
+                              });
+                              confetti({
+                                particleCount: 2,
+                                angle: 120,
+                                spread: 55,
+                                origin: { x: 1 },
+                                colors: colors,
+                                scalar: 0.8,
+                                drift: -0.5,
+                                gravity: 0.8
+                              });
+                            
+                              if (Date.now() < end) {
+                                requestAnimationFrame(frame);
+                              }
+                            }());
+                        }
+                        
+                        // 2. Animate Duolingo Bar
+                        if (progressFill) {
+                            // Reset
+                            progressFill.style.width = "0%";
+                            progressFill.style.transition = "none"; // Disable transition for reset
+                            void progressFill.offsetWidth; // Force reflow
+                            
+                            // Enable transition
+                            progressFill.style.transition = "width 1.5s ease-out";
+                            progressFill.style.width = scorePercentage + "%";
+                            
+                            const duration = 1500;
+                            const startTime = Date.now();
+                            
+                            function spawnParticles() {
+                                const elapsed = Date.now() - startTime;
+                                if (elapsed < duration) {
+                                    // Get current visual width percentage
+                                    const currentWidth = parseFloat(window.getComputedStyle(progressFill).width);
+                                    const totalWidth = parseFloat(window.getComputedStyle(progressContainer).width);
+                                    
+                                    if (totalWidth > 0) {
+                                        const currentPercent = (currentWidth / totalWidth) * 100;
+                                        
+                                        // Create particle at the leading edge
+                                        // Maybe limit creation rate to avoid too many DOM nodes every frame
+                                        if (Math.random() > 0.5) { // 50% chance per frame ~ 30fps effective particle rate
+                                            const particle = document.createElement('div');
+                                            particle.classList.add('duo-particle');
+                                            particle.style.left = currentPercent + "%";
+                                            // Center vertically relative to bar height (3rem/12px)
+                                            // The bar is h-3 (0.75rem = 12px).
+                                            // Top 0 is top of container.
+                                            // Randomize slightly around the center/edge
+                                            particle.style.top = (Math.random() * 10 - 2) + "px"; 
+                                            
+                                            progressContainer.appendChild(particle);
+                                            
+                                            setTimeout(() => { particle.remove(); }, 500);
+                                        }
+                                    }
+                                    requestAnimationFrame(spawnParticles);
+                                }
+                            }
+                            spawnParticles();
+                        }
+                    }
+                });
             }
+            
+            // --- Falling Stars Sprinkle Logic ---
+            const academicCards = document.querySelectorAll('.academic-card');
+            
+            function createStar(card) {
+                const star = document.createElement('div');
+                star.classList.add('falling-star');
+                
+                // Random X position within the card
+                const rect = card.getBoundingClientRect();
+                // Position relative to card width
+                const xPos = Math.random() * 100; 
+                
+                star.style.left = xPos + '%';
+                // Start from bottom edge
+                star.style.bottom = '-2px'; 
+                
+                card.appendChild(star);
+                
+                // Clean up
+                setTimeout(() => {
+                    star.remove();
+                }, 1200);
+            }
+
+            // Loop to create stars randomly
+            setInterval(() => {
+                academicCards.forEach(card => {
+                    // 30% chance to spawn a star per tick per card
+                    if (Math.random() > 0.7) {
+                        createStar(card);
+                    }
+                });
+            }, 400); // Check every 400ms
 
 
             // --- Chatbot Logic (Local Rules) ---
@@ -831,6 +1004,38 @@
             const chatSend = document.getElementById('chat-send-btn');
             const chatMessages = document.getElementById('chat-messages');
             const typingIndicator = document.getElementById('typing-indicator');
+
+            // IMPORTANT: Put your Gemini API Key here for the live site
+            const API_KEY = ""; 
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+
+            // System Prompt for the AI
+            const SYSTEM_PROMPT = `You are a helpful assistant for Max Gum's personal portfolio website. 
+            Use the following information to answer user queries directly and professionally.
+            If you don't know the answer, say you don't know and suggest contacting Max directly.
+            
+            About Max:
+            - Full Name: Max Gum
+            - Occupation: Student, Entrepreneur, Aspiring Engineer.
+            - Location: Warsaw, Poland.
+            - Education: 
+              1. British International School Istanbul (BISI): IGCSEs (2023), IB Diploma (2025, top 10% global).
+              2. Warsaw University of Technology (WUT): Bachelor's in Electrical Engineering (Current).
+              3. Spanish DELE Certification: Level B1 (2024).
+            
+            Ventures:
+            - Migmag: Founder & CEO. Specializes in social media marketing, lead generation, FB ads.
+            - Enactus PW: Project Leader. Social entrepreneurship.
+            
+            Contact:
+            - Email: max@migmag.io (or max.gum@migmag.pl)
+            - LinkedIn: https://www.linkedin.com/in/maxgum/
+            - Website: max-gum.dorik.io (former), current is this portfolio.
+            
+            Key Skills: Sales, Entrepreneurship, Marketing, Engineering, Discipline.
+            Interests: Kickboxing, Swimming (3+ years high level), Gym.
+            Languages: English, Polish, Spanish (B1).
+            `;
 
             function toggleChat() {
                 chatWindow.classList.toggle('active');
@@ -844,7 +1049,7 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
             
-            // Simple Rule-Based Response Logic
+            // Simple Rule-Based Response Logic (Fallback if no API key)
             function getBotResponse(input) {
                 const lowerInput = input.toLowerCase();
                 
@@ -855,7 +1060,7 @@
                 } else if (lowerInput.includes('linkedin')) {
                     return "Max's LinkedIn is: https://www.linkedin.com/in/maxgum/";
                 } else if (lowerInput.includes('education') || lowerInput.includes('school') || lowerInput.includes('study') || lowerInput.includes('university')) {
-                    return "Max studied at the British International School Istanbul (IB Diploma) and is currently pursuing Electrical Engineering at Warsaw University of Technology.";
+                    return "Max studied at the British International School Istanbul (IB Diploma) and is currently pursuing Electrical Engineering at Warsaw University of Technology. He also holds a Spanish DELE B1 certification.";
                 } else if (lowerInput.includes('migmag') || lowerInput.includes('company') || lowerInput.includes('business')) {
                     return "Migmag is Max's venture specializing in social media marketing and lead generation.";
                 } else if (lowerInput.includes('hello') || lowerInput.includes('hi') || lowerInput.includes('hey')) {
@@ -865,7 +1070,7 @@
                 }
             }
 
-            function handleUserMessage() {
+            async function handleUserMessage() {
                 const text = chatInput.value.trim();
                 if (!text) return;
 
@@ -873,12 +1078,40 @@
                 chatInput.value = '';
                 typingIndicator.style.display = 'block';
 
-                // Simulate typing delay
-                setTimeout(() => {
+                // If no API key is present, fallback to basic rules
+                if (!API_KEY) {
+                    setTimeout(() => {
+                        typingIndicator.style.display = 'none';
+                        const reply = getBotResponse(text);
+                        appendMessage(reply, 'bot');
+                    }, 600);
+                    return;
+                }
+
+                // Call Gemini API
+                try {
+                    const payload = {
+                        contents: [{ role: "user", parts: [{ text: text }] }],
+                        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }
+                    };
+
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+                    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't process that.";
+                    
                     typingIndicator.style.display = 'none';
-                    const reply = getBotResponse(text);
                     appendMessage(reply, 'bot');
-                }, 600);
+
+                } catch (error) {
+                    console.error(error);
+                    typingIndicator.style.display = 'none';
+                    appendMessage("Sorry, something went wrong with the connection.", 'bot');
+                }
             }
 
             chatBtn.addEventListener('click', toggleChat);
