@@ -13,6 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 
+    <!-- Load Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
     <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -81,11 +84,9 @@
         }
 
         body {
-            /* Swapped background-color for a subtle animated gradient */
             background: linear-gradient(-45deg, #0a0a0a, #000000, #1a160f, #0a0a0a);
             background-size: 400% 400%;
-            animation: animatedGradient 25s ease infinite; /* Slow, elegant animation */
-            
+            animation: animatedGradient 25s ease infinite;
             color: #f5f5f5;
             overflow-x: hidden;
         }
@@ -95,7 +96,7 @@
             transition: background-color 0.3s ease-in-out;
         }
         #main-header.scrolled {
-            background-color: rgba(10, 10, 10, 0.9); /* Dark, slightly transparent bg */
+            background-color: rgba(10, 10, 10, 0.9);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
@@ -123,7 +124,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay for readability */
+            background-color: rgba(0, 0, 0, 0.6);
             z-index: 1;
         }
         /* Ensure hero content is above overlay */
@@ -134,7 +135,6 @@
         
         /* Gradient "cutout" mask for hero section */
         #hero-section {
-            /* Fades top 10% and bottom 10% into the animated body gradient */
             -webkit-mask-image: linear-gradient(to bottom, 
                 transparent 0%, 
                 black 10%, 
@@ -153,7 +153,7 @@
         .animated-line {
             width: 0;
             height: 2px;
-            background-color: #a88a53; /* Accent color */
+            background-color: #a88a53;
             transition: width 1s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -201,6 +201,7 @@
             <a href="#" class="font-serif text-2xl font-bold text-white transition-colors hover:text-brand-accent">MG/</a>
             <nav class="hidden sm:flex space-x-8">
                 <a href="#about" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">About</a>
+                <a href="#education" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">Education</a>
                 <a href="#ventures" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">Ventures</a>
                 <a href="#activities" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">Activities</a>
                 <a href="#contact" class="text-white opacity-80 hover:opacity-100 hover:text-brand-accent transition-all">Contact</a>
@@ -217,44 +218,52 @@
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="fixed top-0 left-0 w-full h-full bg-brand-dark flex flex-col justify-center items-center space-y-8 z-40 transform -translate-x-full transition-transform duration-300 ease-in-out">
         <a href="#about" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">About</a>
+        <a href="#education" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">Education</a>
         <a href="#ventures" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">Ventures</a>
         <a href="#activities" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">Activities</a>
         <a href="#contact" class="mobile-link text-3xl font-serif text-white hover:text-brand-accent">Contact</a>
     </div>
 
     <!-- Hero Section -->
-    <!-- ID added for gradient mask styling -->
     <section id="hero-section" class="h-screen min-h-[700px] w-full flex flex-col justify-center items-center p-6 sm:p-8 relative overflow-hidden">
         
         <!-- Video Background Container -->
         <div class="hero-video-container">
-            <!-- 
-                USER ACTION REQUIRED: 
-                1. Create a folder named 'assets' in the same directory as this index.html file.
-                2. Place your video file inside it (e.g., 'assets/video-loop.mp4').
-                3. Update the 'src' attribute below to match your video file's name.
-            -->
             <video class="hero-video" 
                    poster="https://placehold.co/1920x1080/0a0a0a/111111?text=Loading+Video..." 
                    autoplay 
                    loop 
                    muted 
                    playsinline
-                   src="assets/video-loop.mp4"> <!-- UPDATE THIS PATH -->
+                   src="assets/video-loop.mp4">
             </video>
             <div class="video-overlay"></div>
         </div>
 
         <!-- Hero Content -->
-        <!-- Changed text-left to text-center -->
         <div class="hero-content container mx-auto max-w-6xl text-center">
             <h1 class="font-serif text-6xl sm:text-8xl md:text-9xl font-bold text-white animate-fade-in-down animate-subtle-glow" style="animation-delay: 0.2s;">
                 <span class="inline-block animate-float-up">Max</span>
                 <span class="inline-block animate-float-down">Gum</span>
             </h1>
-            <p class="font-sans text-xl sm:text-2xl text-brand-light opacity-90 animate-fade-in-down" style="animation-delay: 0.5s;">
+            <p class="font-sans text-xl sm:text-2xl text-brand-light opacity-90 animate-fade-in-down mb-8" style="animation-delay: 0.5s;">
                 Student Entrepreneur. Founder. Engineer in Training.
             </p>
+            
+            <!-- Hero Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.8s;">
+                <a href="https://www.linkedin.com/in/maxgum/" target="_blank" rel="noopener noreferrer" 
+                   class="hero-btn group relative px-8 py-3 overflow-hidden font-bold rounded-full bg-white text-brand-dark shadow-lg transition-all hover:bg-brand-accent hover:text-white">
+                    <span class="relative z-10 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.85-3.037-1.85 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.557V9h3.562v11.452zM22.225 0H1.771C.79 0 0 .774 0 1.729v20.542C0 23.227.79 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"></path></svg>
+                        LinkedIn
+                    </span>
+                </a>
+                <a href="https://migmag-hvac-and-elevator.dorik.io/" target="_blank" rel="noopener noreferrer" 
+                   class="hero-btn group relative px-8 py-3 overflow-hidden font-bold rounded-full border-2 border-brand-accent text-brand-accent shadow-lg transition-all hover:bg-brand-accent hover:text-brand-dark">
+                    <span class="relative z-10">Visit Migmag</span>
+                </a>
+            </div>
         </div>
         
         <!-- Scroll Down Indicator -->
@@ -271,16 +280,10 @@
     <section id="about" class="py-20 md:py-32 px-6 sm:px-8">
         <div class="container mx-auto max-w-6xl">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
-                
                 <!-- Image Column -->
                 <div class="md:col-span-1 reveal flex flex-col items-center md:items-start">
                     <div class="profile-image-container">
-                        <!-- 
-                            USER ACTION REQUIRED: 
-                            1. Place your profile picture in the 'assets' folder (e.g., 'assets/profile-image.jpg').
-                            2. Update the 'src' attribute below to match your image file's name.
-                        -->
-                        <img src="assets/profile-image.jpg" <!-- UPDATE THIS PATH -->
+                        <img src="assets/profile-image.jpg" 
                              alt="Max Gum profile picture"
                              onerror="this.src='https://placehold.co/200x200/1a1a1a/333333?text=Image+Error';">
                     </div>
@@ -299,6 +302,49 @@
                     <p class="text-lg sm:text-xl text-brand-light leading-relaxed">
                         I am committed to developing real-world skills, taking initiative, and turning ideas into action. Whether in my engineering studies, my entrepreneurial projects, or my athletic pursuits, I am always pushing to grow, improve, and go beyond my comfort zones.
                     </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section (New) -->
+    <section id="education" class="py-20 px-6 sm:px-8 bg-black/30 border-y border-white/5">
+        <div class="container mx-auto max-w-6xl">
+            <div class="reveal mb-12 text-center">
+                <div class="inline-block p-3 rounded-full border-2 border-brand-accent mb-4 text-brand-accent">
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 0 0-.491 6.347A48.627 48.627 0 0 1 12 20.904a48.627 48.627 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.57 50.57 0 0 0-2.658-.813A59.905 59.905 0 0 1 12 3.493a59.902 59.902 0 0 1 10.499 5.216 50.552 50.552 0 0 0-2.658.814m-15.482 0A50.55 50.55 0 0 1 12 13.489a50.55 50.55 0 0 1 6.466-1.254m-12.552 0a50.55 50.55 0 0 1-6.61 1.612m6.61-1.612A59.9 59.9 0 0 1 12 13.489a59.9 59.9 0 0 1 5.38-1.726m-5.38 1.726a25.5 25.5 0 0 1-2.577 3.916m2.577-3.916a25.5 25.5 0 0 0 2.577 3.916" />
+                      </svg>
+                </div>
+                <h2 class="font-serif text-4xl font-bold text-white mb-2">Academic Background</h2>
+                <div class="w-20 h-1 bg-brand-accent mx-auto mt-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- BISI -->
+                <div class="reveal activity-card" style="transition-delay: 0.2s;">
+                    <h3 class="font-serif text-2xl text-white mb-2">British International School Istanbul</h3>
+                    <p class="text-brand-accent font-bold mb-4">2019 - 2025</p>
+                    <p class="text-brand-gray mb-4 leading-relaxed">
+                        Achieved top 10% global results in the International Baccalaureate (IB) program (2025). Successfully completed IGCSEs in 2023 with distinction. Developed a truly international perspective within a rigorous British academic environment.
+                    </p>
+                    <a href="https://www.bisistanbul.org/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-sm font-bold text-white hover:text-brand-accent transition-colors">
+                        Visit Website 
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </a>
+                </div>
+
+                <!-- WUT -->
+                <div class="reveal activity-card" style="transition-delay: 0.4s;">
+                    <h3 class="font-serif text-2xl text-white mb-2">Warsaw University of Technology</h3>
+                    <p class="text-brand-accent font-bold mb-4">Current</p>
+                    <p class="text-brand-gray mb-4 leading-relaxed">
+                        Pursuing a Bachelor's degree in Electrical Engineering at Poland's premier technical university. Focusing on advanced hardware systems and engineering principles to bridge the gap between technical innovation and business application.
+                    </p>
+                    <a href="https://www.pw.edu.pl/engpw" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-sm font-bold text-white hover:text-brand-accent transition-colors">
+                        Visit Website
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </a>
                 </div>
             </div>
         </div>
@@ -336,6 +382,34 @@
             <!-- Enactus -->
             <div class="reveal" style="transition-delay: 0.4s;">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="md:col-span-1">
+                        <h3 class="font-serif text-3xl text-white">Enactus PW</h3>
+                        <span class="text-brand-gray text-lg">Project Leader</span>
+                    </div>
+                    <div class="md:col-span-2">
+                        <p class="text-lg sm:text-xl text-brand-light mb-6 leading-relaxed">
+                            As an active member and project leader at Enactus PW, I develop innovative projects that have a real-world impact. This role sharpens my leadership skills and allows me to apply entrepreneurial thinking to solve complex challenges.
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-badge">Project Management</span>
+                            <span class="skill-badge">Leadership</span>
+                            <span class="skill-badge">Social Entrepreneurship</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Activities Section -->
+    <section id="activities" class="py-20 md:py-32 px-6 sm:px-8">
+        <div class="container mx-auto max-w-6xl">
+            <div class="reveal mb-12">
+                <h2 class="font-serif text-4xl font-bold text-white mb-4">Activities & Societies</h2>
+                <div class="animated-line"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Technology Specialization -->
                 <div class="reveal" style="transition-delay: 0.3s;">
                     <div class="activity-card">
@@ -347,7 +421,7 @@
                 <div class="reveal" style="transition-delay: 0.4s;">
                     <div class="activity-card">
                         <h3 class="font-serif text-2xl text-white mb-2">Competitive Swimming</h3>
-                        <p class="text-brand-gray">Dedicating <span id="swimming-duration" class="font-bold text-brand-light"></span>+ years to high-level competition, forging endurance and a relentless pursuit of performance.</p>
+                        <p class="text-brand-gray">Dedicating <span class="font-bold text-brand-light">3+</span> years to high-level competition, forging endurance and a relentless pursuit of performance.</p>
                     </div>
                 </div>
                 <!-- Gym -->
@@ -464,6 +538,10 @@
             border-color: #a88a53;
             color: #a88a53;
         }
+        
+        .hero-btn:hover {
+            transform: translateY(-2px);
+        }
     </style>
 
     <!-- JavaScript for Interactions -->
@@ -488,13 +566,13 @@
                 return duration.toString();
             }
 
-            const swimmingDuration = calculateDuration('2022-12-01');
+            // const swimmingDuration = calculateDuration('2022-12-01'); // REMOVED as requested
             const gymDuration = calculateDuration('2023-06-01');
-            const techDuration = calculateDuration('2019-01-01'); // Added this line
+            const techDuration = calculateDuration('2019-01-01');
 
-            document.getElementById('swimming-duration').textContent = swimmingDuration;
+            // document.getElementById('swimming-duration').textContent = swimmingDuration; // REMOVED
             document.getElementById('gym-duration').textContent = gymDuration;
-            document.getElementById('tech-duration').textContent = techDuration; // Added this line
+            document.getElementById('tech-duration').textContent = techDuration;
             // --- End of Calculate Durations ---
 
 
@@ -523,34 +601,70 @@
                 });
             });
 
-            // Intersection Observer for Scroll Animations
+            // Intersection Observer for Scroll Animations & Confetti
             const revealElements = document.querySelectorAll('.reveal');
+            const educationSection = document.getElementById('education');
+            let confettiFired = false;
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        // Element is on screen, play animation
                         entry.target.classList.add('is-visible');
+                        
+                        // Fire subtle confetti when education section appears (only once)
+                        if (entry.target.id === 'education' && !confettiFired && window.confetti) {
+                             confettiFired = true;
+                             var end = Date.now() + (1.5 * 1000); // 1.5 seconds
+                             
+                             var colors = ['#a88a53', '#f5f5f5'];
+
+                             (function frame() {
+                               confetti({
+                                 particleCount: 2,
+                                 angle: 60,
+                                 spread: 55,
+                                 origin: { x: 0 },
+                                 colors: colors,
+                                 scalar: 0.8, // smaller particles
+                                 drift: 0.5, // slight drift
+                                 gravity: 0.8 // slow fall
+                               });
+                               confetti({
+                                 particleCount: 2,
+                                 angle: 120,
+                                 spread: 55,
+                                 origin: { x: 1 },
+                                 colors: colors,
+                                 scalar: 0.8,
+                                 drift: -0.5,
+                                 gravity: 0.8
+                               });
+                             
+                               if (Date.now() < end) {
+                                 requestAnimationFrame(frame);
+                               }
+                             }());
+                        }
+
                     } else {
-                        // Element is off screen.
-                        // Only reset (remove .is-visible) if it's *below* the viewport.
+                        // Only reset animation if scrolled off top
                         if (entry.boundingClientRect.top > 0) {
-                            // This means its top edge is below the viewport's top edge.
-                            // Since it's not intersecting, it must be below the viewport.
                             entry.target.classList.remove('is-visible');
                         }
-                        // If it's above the viewport (top < 0), we do nothing,
-                        // allowing it to retain the .is-visible class and not re-play
-                        // when scrolling back up.
                     }
                 });
             }, {
-                threshold: 0.1 // Trigger when 10% of the element is visible
+                threshold: 0.1
             });
 
             revealElements.forEach(el => {
                 observer.observe(el);
             });
+            
+            // Observe Education Section specifically for confetti
+            if (educationSection) {
+                observer.observe(educationSection);
+            }
 
         });
     </script>
