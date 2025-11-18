@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Max Gum - Student & Entrepreneur</title>
+
+    <!-- USER ACTION REQUIRED: Place your favicon file in 'assets/favicon.ico' -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -191,6 +194,126 @@
             height: 100%;
             object-fit: cover;
         }
+
+        /* --- Chatbot Styles --- */
+        .chat-widget-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #a88a53;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(168, 138, 83, 0.4);
+            transition: all 0.3s ease;
+            z-index: 9999;
+            border: 2px solid transparent;
+        }
+        .chat-widget-btn:hover {
+            transform: scale(1.1);
+            background-color: #c0a068;
+        }
+        
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 500px;
+            background-color: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            z-index: 9998;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .chat-window.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .chat-header {
+            padding: 15px;
+            background-color: #111;
+            border-bottom: 1px solid #333;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .message.user {
+            align-self: flex-end;
+            background-color: #a88a53;
+            color: #0a0a0a;
+            border-bottom-right-radius: 2px;
+        }
+        .message.bot {
+            align-self: flex-start;
+            background-color: #222;
+            color: #f5f5f5;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #333;
+        }
+        
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid #333;
+            background-color: #111;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input {
+            flex: 1;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            outline: none;
+        }
+        .chat-input:focus {
+            border-color: #a88a53;
+        }
+        .chat-send-btn {
+            color: #a88a53;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .typing-indicator {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+            display: none;
+        }
+
     </style>
 </head>
 <body class="font-sans antialiased">
@@ -308,7 +431,7 @@
     </section>
 
     <!-- Education Section (New) -->
-    <section id="education" class="py-20 px-6 sm:px-8 bg-black/30 border-y border-white/5">
+    <section id="education" class="py-20 px-6 sm:px-8 bg-gradient-to-b from-transparent via-black/50 to-transparent">
         <div class="container mx-auto max-w-6xl">
             <div class="reveal mb-12 text-center">
                 <div class="inline-block p-3 rounded-full border-2 border-brand-accent mb-4 text-brand-accent">
@@ -316,7 +439,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 0 0-.491 6.347A48.627 48.627 0 0 1 12 20.904a48.627 48.627 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.57 50.57 0 0 0-2.658-.813A59.905 59.905 0 0 1 12 3.493a59.902 59.902 0 0 1 10.499 5.216 50.552 50.552 0 0 0-2.658.814m-15.482 0A50.55 50.55 0 0 1 12 13.489a50.55 50.55 0 0 1 6.466-1.254m-12.552 0a50.55 50.55 0 0 1-6.61 1.612m6.61-1.612A59.9 59.9 0 0 1 12 13.489a59.9 59.9 0 0 1 5.38-1.726m-5.38 1.726a25.5 25.5 0 0 1-2.577 3.916m2.577-3.916a25.5 25.5 0 0 0 2.577 3.916" />
                       </svg>
                 </div>
-                <h2 class="font-serif text-4xl font-bold text-white mb-2">Academic Background</h2>
+                <!-- ID added here for confetti targeting -->
+                <h2 id="academic-heading" class="font-serif text-4xl font-bold text-white mb-2">Academic Background</h2>
                 <div class="w-20 h-1 bg-brand-accent mx-auto mt-4"></div>
             </div>
 
@@ -341,7 +465,7 @@
                     <p class="text-brand-gray mb-4 leading-relaxed">
                         Pursuing a Bachelor's degree in Electrical Engineering at Poland's premier technical university. Focusing on advanced hardware systems and engineering principles to bridge the gap between technical innovation and business application.
                     </p>
-                    <a href="https://www.pw.edu.pl/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-sm font-bold text-white hover:text-brand-accent transition-colors">
+                    <a href="https://www.pw.edu.pl/engpw" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-sm font-bold text-white hover:text-brand-accent transition-colors">
                         Visit Website
                         <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
@@ -471,6 +595,31 @@
         </div>
     </footer>
 
+    <!-- Floating Chat Widget -->
+    <div id="chat-widget-btn" class="chat-widget-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="w-8 h-8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+        </svg>
+    </div>
+
+    <div id="chat-window" class="chat-window">
+        <div class="chat-header">
+            <span class="text-white font-bold text-lg">Max's Assistant</span>
+            <button id="close-chat" class="text-gray-400 hover:text-white">&times;</button>
+        </div>
+        <div id="chat-messages" class="chat-messages">
+            <div class="message bot">Hello! How can I help you today? Ask me for Max's email or about his projects.</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Type a question...">
+            <button id="chat-send-btn" class="chat-send-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.126A59.768 59.768 0 0 1 21.485 12 59.77 59.77 0 0 1 3.27 20.876L5.999 12Zm0 0h7.5" />
+                </svg>
+            </button>
+        </div>
+        <div id="typing-indicator" class="typing-indicator pl-4 pb-2">Assistant is typing...</div>
+    </div>
 
     <!-- CSS for Components -->
     <style>
@@ -566,11 +715,9 @@
                 return duration.toString();
             }
 
-            // const swimmingDuration = calculateDuration('2022-12-01'); // REMOVED as requested
             const gymDuration = calculateDuration('2023-06-01');
             const techDuration = calculateDuration('2019-01-01');
 
-            // document.getElementById('swimming-duration').textContent = swimmingDuration; // REMOVED
             document.getElementById('gym-duration').textContent = gymDuration;
             document.getElementById('tech-duration').textContent = techDuration;
             // --- End of Calculate Durations ---
@@ -601,51 +748,12 @@
                 });
             });
 
-            // Intersection Observer for Scroll Animations & Confetti
+            // General Intersection Observer for Scroll Animations
             const revealElements = document.querySelectorAll('.reveal');
-            const educationSection = document.getElementById('education');
-            let confettiFired = false;
-
-            const observer = new IntersectionObserver((entries) => {
+            const generalObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
-                        
-                        // Fire subtle confetti when education section appears (only once)
-                        if (entry.target.id === 'education' && !confettiFired && window.confetti) {
-                             confettiFired = true;
-                             var end = Date.now() + (1.5 * 1000); // 1.5 seconds
-                             
-                             var colors = ['#a88a53', '#f5f5f5'];
-
-                             (function frame() {
-                               confetti({
-                                 particleCount: 2,
-                                 angle: 60,
-                                 spread: 55,
-                                 origin: { x: 0 },
-                                 colors: colors,
-                                 scalar: 0.8, // smaller particles
-                                 drift: 0.5, // slight drift
-                                 gravity: 0.8 // slow fall
-                               });
-                               confetti({
-                                 particleCount: 2,
-                                 angle: 120,
-                                 spread: 55,
-                                 origin: { x: 1 },
-                                 colors: colors,
-                                 scalar: 0.8,
-                                 drift: -0.5,
-                                 gravity: 0.8
-                               });
-                             
-                               if (Date.now() < end) {
-                                 requestAnimationFrame(frame);
-                               }
-                             }());
-                        }
-
                     } else {
                         // Only reset animation if scrolled off top
                         if (entry.boundingClientRect.top > 0) {
@@ -658,17 +766,170 @@
             });
 
             revealElements.forEach(el => {
-                observer.observe(el);
+                generalObserver.observe(el);
             });
             
-            // Observe Education Section specifically for confetti
+            // Specific Observer for Confetti (Center of screen)
+            let confettiFired = false;
+            const educationSection = document.getElementById('education');
+            const confettiObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !confettiFired && window.confetti) {
+                         confettiFired = true;
+                         var end = Date.now() + (1.5 * 1000); // 1.5 seconds
+                         
+                         var colors = ['#a88a53', '#f5f5f5'];
+
+                         (function frame() {
+                           confetti({
+                             particleCount: 2,
+                             angle: 60,
+                             spread: 55,
+                             origin: { x: 0 },
+                             colors: colors,
+                             scalar: 0.8, // smaller particles
+                             drift: 0.5, // slight drift
+                             gravity: 0.8 // slow fall
+                           });
+                           confetti({
+                             particleCount: 2,
+                             angle: 120,
+                             spread: 55,
+                             origin: { x: 1 },
+                             colors: colors,
+                             scalar: 0.8,
+                             drift: -0.5,
+                             gravity: 0.8
+                           });
+                         
+                           if (Date.now() < end) {
+                             requestAnimationFrame(frame);
+                           }
+                         }());
+                         
+                         // Disconnect observer after firing once to improve performance
+                         confettiObserver.disconnect();
+                    }
+                });
+            }, {
+                root: null,
+                // This rootMargin triggers intersection when the element enters the middle 20% of the viewport
+                rootMargin: '-10% 0px -10% 0px', 
+                threshold: 0.3
+            });
+
             if (educationSection) {
-                observer.observe(educationSection);
+                confettiObserver.observe(educationSection);
             }
+
+
+            // --- Chatbot Logic ---
+            const chatBtn = document.getElementById('chat-widget-btn');
+            const chatWindow = document.getElementById('chat-window');
+            const closeChat = document.getElementById('close-chat');
+            const chatInput = document.getElementById('chat-input');
+            const chatSend = document.getElementById('chat-send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            const typingIndicator = document.getElementById('typing-indicator');
+
+            // IMPORTANT: Put your Gemini API Key here for the live site
+            const API_KEY = "AIzaSyBu5FIXek95ibDixConymz4FQRC3_-IVJk"; 
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+
+            // System Prompt for the AI
+            const SYSTEM_PROMPT = `You are a helpful assistant for Max Gum's personal portfolio website. 
+            Use the following information to answer user queries directly and professionally.
+            If you don't know the answer, say you don't know and suggest contacting Max directly.
+            
+            About Max:
+            - Full Name: Max Gum
+            - Occupation: Student, Entrepreneur, Aspiring Engineer.
+            - Location: Warsaw, Poland.
+            - Education: 
+              1. British International School Istanbul (BISI): IGCSEs (2023), IB Diploma (2025, top 10% global).
+              2. Warsaw University of Technology (WUT): Bachelor's in Electrical Engineering (Current).
+            
+            Ventures:
+            - Migmag: Founder & CEO. Specializes in social media marketing, lead generation, FB ads.
+            - Enactus PW: Project Leader. Social entrepreneurship.
+            
+            Contact:
+            - Email: max@migmag.io (or max.gum@migmag.pl)
+            - LinkedIn: https://www.linkedin.com/in/maxgum/
+            - Website: max-gum.dorik.io (former), current is this portfolio.
+            
+            Key Skills: Sales, Entrepreneurship, Marketing, Engineering, Discipline.
+            Interests: Kickboxing, Swimming (3+ years high level), Gym.
+            `;
+
+            function toggleChat() {
+                chatWindow.classList.toggle('active');
+            }
+
+            function appendMessage(text, sender) {
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('message', sender);
+                msgDiv.textContent = text;
+                chatMessages.appendChild(msgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            async function handleUserMessage() {
+                const text = chatInput.value.trim();
+                if (!text) return;
+
+                appendMessage(text, 'user');
+                chatInput.value = '';
+                typingIndicator.style.display = 'block';
+
+                // If no API key is present, fallback to basic rules
+                if (!API_KEY) {
+                    setTimeout(() => {
+                        typingIndicator.style.display = 'none';
+                        let response = "I'm currently in demo mode (no API key). ";
+                        if(text.toLowerCase().includes('email')) response += "Max's email is max@migmag.io.";
+                        else if(text.toLowerCase().includes('contact')) response += "You can contact Max via email or LinkedIn.";
+                        else response += "Please configure the Gemini API key to enable full AI responses.";
+                        appendMessage(response, 'bot');
+                    }, 1000);
+                    return;
+                }
+
+                // Call Gemini API
+                try {
+                    const payload = {
+                        contents: [{ role: "user", parts: [{ text: text }] }],
+                        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }
+                    };
+
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+                    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't process that.";
+                    
+                    typingIndicator.style.display = 'none';
+                    appendMessage(reply, 'bot');
+
+                } catch (error) {
+                    console.error(error);
+                    typingIndicator.style.display = 'none';
+                    appendMessage("Sorry, something went wrong with the connection.", 'bot');
+                }
+            }
+
+            chatBtn.addEventListener('click', toggleChat);
+            closeChat.addEventListener('click', toggleChat);
+            chatSend.addEventListener('click', handleUserMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleUserMessage();
+            });
 
         });
     </script>
 
 </body>
 </html>
-
