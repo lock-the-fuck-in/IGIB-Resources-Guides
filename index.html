@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGIB Study Bridge</title>
+    
+    <!-- Tailwind CSS (No build step required) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Global Styles & Variables */
+        :root {
+            --glass-border: rgba(226, 232, 240, 0.6);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --accent-rose: #fb7185;
+            --accent-slate: #475569;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slide-in-right {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .animate-float { animation: float 8s ease-in-out infinite; }
+        .animate-fade-in { animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-slide-in { animation: slide-in-right 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        .animate-shimmer {
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-rose);
+            box-shadow: 0 15px 30px -5px rgba(251, 113, 133, 0.15);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .hero-bg {
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(253, 164, 175, 0.15), transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(186, 230, 253, 0.15), transparent 40%),
+                #f8fafc;
+        }
+        
+        /* Stagger Delays */
+        .stagger-1 { animation-delay: 100ms; }
+        .stagger-2 { animation-delay: 200ms; }
+        .stagger-3 { animation-delay: 300ms; }
+        .stagger-4 { animation-delay: 400ms; }
+
+        /* Utility */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen hero-bg">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-500 py-4 md:py-8 bg-transparent">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center">
+            
+            <!-- Logo -->
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="navigateTo('home')">
+                <div class="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm group-hover:shadow-md transition-all">
+                    <i data-lucide="book-open" class="text-rose-400 w-5 h-5"></i>
+                </div>
+                <span class="text-lg font-bold text-slate-800 tracking-wider hidden sm:inline">IGIB <span class="text-slate-400 font-sans text-xs ml-1 font-normal tracking-normal uppercase">Study Bridge</span></span>
+                <span class="text-lg font-bold text-slate-800 tracking-wider sm:hidden">IGIB</span>
+            </div>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center gap-2 bg-white/80 rounded-full p-1.5 border border-slate-200 shadow-sm backdrop-blur-md">
+                <button onclick="navigateTo('home')" class="nav-btn flex items-center gap-2 px-5 py-2.5 rounded-full transition-all duration-300 text-sm tracking-wide text-slate-500 hover:text-rose-500 hover:bg-rose-50 font-medium" data-target="home">
+                    <i data-lucide="user" class="w-4 h-4"></i> Home
+                </button>
+                <button onclick="navigateTo('igcse')" class="nav-btn flex items-center gap-2 px-5 py-2.5 rounded-full transition-all duration-300 text-sm tracking-wide text-slate-500 hover:text-rose-500 hover:bg-rose-50 font-medium" data-target="igcse">
+                    <i data-lucide="book-open" class="w-4 h-4"></i> IGCSE
+                </button>
+                <button onclick="navigateTo('ib')" class="nav-btn flex items-center gap-2 px-5 py-2.5 rounded-full transition-all duration-300 text-sm tracking-wide text-slate-500 hover:text-rose-500 hover:bg-rose-50 font-medium" data-target="ib">
+                    <i data-lucide="graduation-cap" class="w-4 h-4"></i> IB Diploma
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden p-2 text-slate-500 hover:text-slate-900" onclick="toggleMobileMenu()">
+                <i data-lucide="menu" id="menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full glass-panel border-t border-slate-200 p-6 flex-col gap-4 animate-fade-in bg-white/95">
+             <button onclick="navigateTo('home'); toggleMobileMenu()" class="p-4 text-left bg-slate-50 rounded-xl text-slate-800 font-bold hover:bg-rose-50 hover:text-rose-600 transition-colors">Home</button>
+             <button onclick="navigateTo('igcse'); toggleMobileMenu()" class="p-4 text-left bg-slate-50 rounded-xl text-slate-800 font-bold hover:bg-rose-50 hover:text-rose-600 transition-colors">IGCSE</button>
+             <button onclick="navigateTo('ib'); toggleMobileMenu()" class="p-4 text-left bg-slate-50 rounded-xl text-slate-800 font-bold hover:bg-rose-50 hover:text-rose-600 transition-colors">IB Diploma</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 md:pt-32 flex-grow">
+
+        <!-- HOME SECTION -->
+        <section id="home" class="page-section active space-y-24 md:space-y-32">
+            <!-- Hero -->
+            <div class="relative min-h-[75vh] flex items-center justify-center text-center px-4 md:px-6">
+                <div class="absolute top-1/4 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-rose-200/20 rounded-full blur-[80px] md:blur-[100px] animate-pulse pointer-events-none"></div>
+                <div class="absolute bottom-1/4 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-blue-200/20 rounded-full blur-[80px] md:blur-[100px] animate-pulse pointer-events-none" style={{ animationDelay: '2s' }}></div>
+                
+                <div class="relative z-10 max-w-5xl space-y-8 md:space-y-10 animate-fade-in">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-100 shadow-sm text-slate-500 text-xs font-semibold tracking-wide uppercase">
+                        <i data-lucide="zap" class="text-rose-400 w-3 h-3"></i>
+                        <span>Latest: 0610 Biology Module Live</span>
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tight text-slate-800 leading-[1.1]">
+                        Bridge the gap to <br />
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-purple-400 to-blue-400 animate-shimmer bg-[length:200%_auto]">Excellence.</span>
+                    </h1>
+                    
+                    <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed font-light">
+                        The ultimate resource hub for IGCSE & IB. Curated by distinction achievers to help you bypass the struggle.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center pt-8">
+                        <button onclick="navigateTo('igcse')" class="px-8 py-4 bg-slate-900 text-white rounded-full font-bold text-lg hover:bg-slate-800 transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-lg shadow-slate-300">
+                            Explore IGCSE <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="navigateTo('ib')" class="px-8 py-4 bg-white text-slate-800 rounded-full font-bold text-lg hover:bg-slate-50 transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-md border border-slate-100">
+                            Explore IB <i data-lucide="layers" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="max-w-7xl mx-auto px-4 md:px-6">
+                <div class="mb-12 md:mb-16 text-center animate-fade-in px-4">
+                    <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 text-slate-800 tracking-tight">The Study Bridge Standard</h2>
+                    <div class="h-1 w-16 md:w-24 bg-gradient-to-r from-rose-200 via-rose-300 to-rose-200 mx-auto rounded-full mb-6"></div>
+                    <p class="text-slate-500 max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed">Built by students, for students. We cut through the noise.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+                    <!-- Feature 1 -->
+                    <div class="glass-card p-6 md:p-8 rounded-3xl h-full flex flex-col group cursor-default animate-fade-in stagger-1">
+                        <div class="mb-6 p-4 bg-rose-50 rounded-2xl w-fit group-hover:bg-rose-100 transition-colors border border-rose-100">
+                            <i data-lucide="star" class="text-rose-400 group-hover:text-rose-500 transition-colors duration-300 w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-3 tracking-wide">Distinction Quality</h3>
+                        <p class="text-slate-500 leading-relaxed font-light">Materials derived from proven success strategies. Created by an ICE Distinction graduate.</p>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="glass-card p-6 md:p-8 rounded-3xl h-full flex flex-col group cursor-default animate-fade-in stagger-2">
+                        <div class="mb-6 p-4 bg-rose-50 rounded-2xl w-fit group-hover:bg-rose-100 transition-colors border border-rose-100">
+                            <i data-lucide="clock" class="text-rose-400 group-hover:text-rose-500 transition-colors duration-300 w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-3 tracking-wide">Time Efficient</h3>
+                        <p class="text-slate-500 leading-relaxed font-light">Don't waste hours searching. We've consolidated the most effective resources in one hub.</p>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="glass-card p-6 md:p-8 rounded-3xl h-full flex flex-col group cursor-default animate-fade-in stagger-3">
+                        <div class="mb-6 p-4 bg-rose-50 rounded-2xl w-fit group-hover:bg-rose-100 transition-colors border border-rose-100">
+                            <i data-lucide="globe" class="text-rose-400 group-hover:text-rose-500 transition-colors duration-300 w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-3 tracking-wide">Zero Cost Access</h3>
+                        <p class="text-slate-500 leading-relaxed font-light">Education should be accessible. No paywalls, no hidden fees. Just pure value.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Author -->
+            <div class="max-w-6xl mx-auto px-4 md:px-6 pb-24">
+                <div class="glass-panel rounded-[2rem] p-6 md:p-16 relative overflow-hidden group bg-white">
+                    <div class="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-br from-rose-50 to-blue-50 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-rose-100/50 transition-colors duration-1000 pointer-events-none"></div>
+                    <div class="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                        <div class="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-tr from-rose-100 to-blue-100 p-1 shadow-xl shrink-0 flex items-center justify-center border border-white">
+                            <i data-lucide="user" class="text-slate-400 w-16 h-16"></i>
+                        </div>
+                        <div class="text-center md:text-left space-y-6">
+                            <div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-2">About The Founder</h2>
+                                <p class="text-rose-400 font-bold tracking-wide uppercase text-sm">Class of 2025 • Distinction (ICE) Awardee</p>
+                            </div>
+                            <p class="text-slate-500 leading-relaxed text-base md:text-lg font-light">
+                                IGIB Study Bridge was established in Oct 2025 as a CAS service project. With top scores in History (94), Spanish (94), and Literature (91), the goal is simple: to democratize academic success. Currently pursuing IB HL Geography, Chemistry, and English.
+                            </p>
+                            <div class="flex flex-wrap justify-center md:justify-start gap-3 pt-2">
+                                <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-600 font-bold">Biology (85)</span>
+                                <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-600 font-bold">History (94)</span>
+                                <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-600 font-bold">Spanish (94)</span>
+                                <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-600 font-bold">Lit (91)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IGCSE SECTION -->
+        <section id="igcse" class="page-section max-w-7xl mx-auto px-4 md:px-6 animate-fade-in">
+            <div class="mb-12 md:mb-16 text-center">
+                <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 text-slate-800 tracking-tight">IGCSE Pathway</h2>
+                <div class="h-1 w-16 md:w-24 bg-gradient-to-r from-rose-200 via-rose-300 to-rose-200 mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-500 max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed">Comprehensive resources for the Cambridge IGCSE curriculum.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 md:gap-8 mb-24">
+                <!-- Biology Card -->
+                <div class="glass-card p-6 md:p-8 rounded-3xl border-t-4 border-emerald-400 hover:border-emerald-300 group bg-white">
+                    <div class="flex justify-between items-start mb-6">
+                        <h3 class="text-2xl font-bold text-slate-800">Biology (0610)</h3>
+                        <span class="bg-emerald-50 text-emerald-600 text-xs px-2 py-1 rounded border border-emerald-100">Updated</span>
+                    </div>
+                    <p class="text-slate-500 mb-8 leading-relaxed">Complete revision notes, diagram breakdowns, and definitions for the 0610 syllabus.</p>
+                    <button onclick="navigateTo('igcse-biology')" class="w-full py-3 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-emerald-200">
+                        Access Module <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <!-- Resources Card -->
+                <div class="glass-card p-6 md:p-8 rounded-3xl border-t-4 border-blue-400 hover:border-blue-300 group bg-white">
+                    <div class="flex justify-between items-start mb-6">
+                        <h3 class="text-2xl font-bold text-slate-800">IGCSE Resources</h3>
+                        <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">Repository</span>
+                    </div>
+                    <p class="text-slate-500 mb-8 leading-relaxed">General revision guides, past paper links, and subject-wide tools available now.</p>
+                    <button onclick="navigateTo('igcse-resources')" class="w-full py-3 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-500 hover:text-white transition-all font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-blue-200">
+                        Open Repository <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <!-- Tips Card -->
+                <div class="glass-card p-6 md:p-8 rounded-3xl border-t-4 border-rose-400 hover:border-rose-300 group bg-white">
+                    <div class="flex justify-between items-start mb-6">
+                        <h3 class="text-2xl font-bold text-slate-800">Strategy & Tips</h3>
+                        <i data-lucide="zap" class="text-rose-400 w-5 h-5"></i>
+                    </div>
+                    <p class="text-slate-500 mb-8 leading-relaxed">Active recall, spaced repetition, and the "Distinction" mindset.</p>
+                    <button onclick="navigateTo('study-tips')" class="w-full py-3 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-rose-200">
+                        Read Guide <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- IB SECTION -->
+        <section id="ib" class="page-section max-w-7xl mx-auto px-4 md:px-6 animate-fade-in">
+            <div class="mb-12 md:mb-16 text-center">
+                <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 text-slate-800 tracking-tight">International Baccalaureate</h2>
+                <div class="h-1 w-16 md:w-24 bg-gradient-to-r from-rose-200 via-rose-300 to-rose-200 mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-500 max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed">The gold standard of pre-university education.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-24">
+                <div class="glass-card p-6 md:p-10 rounded-3xl relative overflow-hidden group bg-white">
+                     <!-- Z-Index Fix applied here -->
+                    <div class="absolute top-0 right-0 p-40 bg-purple-50 rounded-full blur-3xl group-hover:bg-purple-100 transition-all duration-700 pointer-events-none z-0"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-bold text-slate-800 mb-6">IB Resources</h3>
+                        <p class="text-slate-500 mb-10 leading-relaxed text-lg">Curated internal assessment (IA) examples, Theory of Knowledge (TOK) essay structures, and HL/SL specific revision guides.</p>
+                        <div class="space-y-4 mb-10">
+                            <div class="flex items-center gap-4 text-slate-600"><div class="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-sm"></div><span>HL Geography Notes</span></div>
+                            <div class="flex items-center gap-4 text-slate-600"><div class="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-sm"></div><span>Chemistry Data Booklet Breakdown</span></div>
+                            <div class="flex items-center gap-4 text-slate-600"><div class="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-sm"></div><span>English A: Lang & Lit Analysis</span></div>
+                        </div>
+                        <button onclick="navigateTo('ib-resources')" class="px-8 py-3 bg-slate-900 text-white rounded-full font-bold hover:bg-purple-600 transition-all hover:scale-105 flex items-center gap-2 shadow-lg shadow-purple-200">
+                            Enter Library <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="glass-panel p-6 md:p-10 rounded-3xl flex flex-col justify-center text-center relative overflow-hidden bg-white/60">
+                    <div class="relative z-10">
+                        <i data-lucide="graduation-cap" class="text-slate-400 mx-auto mb-6 w-14 h-14"></i>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-3">More Content Loading...</h3>
+                        <p class="text-slate-500 max-w-sm mx-auto">The IB section is currently under active development. Expect major updates in Q1 2026.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUBPAGE: BIOLOGY -->
+        <section id="igcse-biology" class="page-section max-w-5xl mx-auto px-4 md:px-6 pt-12 animate-fade-in">
+            <button onclick="navigateTo('igcse')" class="flex items-center gap-2 text-slate-400 hover:text-slate-800 mb-10 transition-colors group">
+                <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i> Back to IGCSE
+            </button>
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 text-slate-800">Biology (0610)</h2>
+                <div class="h-1 w-24 bg-rose-200 mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">Master the science of life with syllabus-aligned precision.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-12">
+                <div class="glass-card p-6 md:p-8 rounded-3xl border-t-2 border-slate-300">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-6">Core <span class="text-sm font-sans font-normal text-slate-400 ml-2">(Grades C-G)</span></h3>
+                    <ul class="space-y-4 text-slate-600">
+                        <li class="flex gap-3 items-center"><span class="text-slate-400 font-mono">P1</span> Multiple Choice (45m)</li>
+                        <li class="flex gap-3 items-center"><span class="text-slate-400 font-mono">P3</span> Theory (1h 15m)</li>
+                        <li class="flex gap-3 items-center"><span class="text-slate-400 font-mono">P5</span> Practical Skills (1h 15m)</li>
+                    </ul>
+                </div>
+                <div class="glass-card p-6 md:p-8 rounded-3xl border-t-2 border-rose-400 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-rose-100/50 blur-3xl rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6">Extended <span class="text-sm font-sans font-normal text-rose-500 ml-2">(Grades A*-E)</span></h3>
+                        <ul class="space-y-4 text-slate-700">
+                            <li class="flex gap-3 items-center"><span class="text-rose-500 font-mono font-bold">P2</span> Multiple Choice (45m)</li>
+                            <li class="flex gap-3 items-center"><span class="text-rose-500 font-mono font-bold">P4</span> Theory (1h 15m)</li>
+                            <li class="flex gap-3 items-center"><span class="text-rose-500 font-mono font-bold">P6</span> Alt. to Practical (1h 15m)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 md:p-10 rounded-3xl mb-12 bg-white/70">
+                <h3 class="text-2xl font-bold text-slate-800 mb-8 border-b border-slate-200 pb-4">The 15 Pillars of 0610</h3>
+                <div class="grid md:grid-cols-3 gap-y-4 gap-x-8 text-slate-500 text-sm">
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">01</span>Characteristics of living organisms</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">02</span>Cells & microscopy</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">03</span>Biological molecules</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">04</span>Enzymes</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">05</span>Plant & human nutrition</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">06</span>Transport (plants + humans)</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">07</span>Respiration</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">08</span>Gas exchange</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">09</span>Excretion</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">10</span>Coordination & responses</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">11</span>Reproduction</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">12</span>Genetics + inheritance</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">13</span>Variation & selection</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">14</span>Ecology</div>
+                    <div class="flex gap-3 items-center hover:text-rose-500 transition-colors"><span class="text-xs font-mono text-slate-300 font-bold">15</span>Human influences on ecosystems</div>
+                </div>
+                <div class="mt-8 pt-6 border-t border-slate-200 text-center">
+                    <a href="https://www.cambridgeinternational.org/Images/595426-2023-2025-syllabus.pdf" target="_blank" class="text-rose-500 hover:text-rose-600 font-medium tracking-wide text-sm uppercase">Access Official Syllabus PDF</a>
+                </div>
+            </div>
+            
+            <div class="glass-card p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 bg-white mb-24">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-rose-50 rounded-lg text-rose-500"><i data-lucide="file-text" class="w-6 h-6"></i></div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">Paper 6 Master Guide</h4>
+                        <p class="text-sm text-slate-500">Personal revision scheme for the Alternative to Practical.</p>
+                    </div>
+                </div>
+                <button class="px-6 py-3 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-700 transition-colors text-sm w-full md:w-auto shadow-lg shadow-slate-200">Download PDF</button>
+            </div>
+        </section>
+
+        <!-- SUBPAGE: IGCSE RESOURCES -->
+        <section id="igcse-resources" class="page-section max-w-6xl mx-auto px-4 md:px-6 pt-12 animate-fade-in">
+             <button onclick="navigateTo('igcse')" class="flex items-center gap-2 text-slate-400 hover:text-slate-800 mb-10 transition-colors group">
+                <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i> Back to IGCSE
+            </button>
+            
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-slate-800">The IGCSE Repository</h2>
+                <div class="h-1 w-24 bg-rose-200 mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">Curated external tools for high-performance students.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8 mb-24">
+                <div class="space-y-8">
+                    <div class="glass-panel p-6 md:p-8 rounded-3xl animate-fade-in stagger-1">
+                        <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3"><i data-lucide="star" class="text-rose-400 w-5 h-5"></i> Essentials</h3>
+                        <div class="space-y-4">
+                            <a href="https://cognitoedu.org/home" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">Cognito</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div><p class="text-sm text-slate-500">Best for Science & Math visualization.</p></a>
+                            <a href="https://www.savemyexams.com/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">Save My Exams</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div><p class="text-sm text-slate-500">The gold standard for notes.</p></a>
+                            <a href="https://igcsenotes.net/IGCSE/index.html" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">IGCSENotes</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div><p class="text-sm text-slate-500">Quick-fire summary sheets.</p></a>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-6 md:p-8 rounded-3xl animate-fade-in stagger-2">
+                         <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3"><i data-lucide="file-text" class="text-blue-400 w-5 h-5"></i> Past Papers</h3>
+                         <div class="space-y-4">
+                            <a href="https://www.cambridgeinternational.org/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">Cambridge Official</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div><p class="text-sm text-slate-500">Direct from the source.</p></a>
+                            <a href="https://pastpapers.papacambridge.com/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">PapaCambridge</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div><p class="text-sm text-slate-500">Extensive archive.</p></a>
+                         </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 glass-panel p-6 md:p-8 rounded-3xl animate-fade-in stagger-3">
+                    <h3 class="text-xl font-bold text-slate-800 mb-8">Subject Libraries</h3>
+                    <div class="grid md:grid-cols-2 gap-10">
+                        <div>
+                            <h4 class="font-bold text-rose-400 mb-4 pb-2 border-b border-slate-100 text-sm tracking-widest uppercase">Biology</h4>
+                            <div class="space-y-3">
+                                <a href="https://teachmeanatomy.info/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">TeachMeAnatomy</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                                <a href="https://www.tutor2u.net/biology/reference" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">Tutor2u Biology</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                                <a href="https://igcsepro.org/igcse-biology" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">IGCSE Pro</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-rose-400 mb-4 pb-2 border-b border-slate-100 text-sm tracking-widest uppercase">English & Econ</h4>
+                            <div class="space-y-3">
+                                <a href="https://www.sparknotes.com/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">SparkNotes</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                                <a href="https://www.youtube.com/c/MrSallesTeachesEnglish" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">Mr Salles English</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                                <a href="https://econplusdal.com/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">EconPlusDal</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUBPAGE: IB RESOURCES -->
+        <section id="ib-resources" class="page-section max-w-6xl mx-auto px-4 md:px-6 pt-12 animate-fade-in">
+            <button onclick="navigateTo('ib')" class="flex items-center gap-2 text-slate-400 hover:text-slate-800 mb-10 transition-colors group">
+                <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i> Back to IB
+            </button>
+            
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-slate-800">IB Resource Vault</h2>
+                <div class="h-1 w-24 bg-rose-200 mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">Tools designed for the rigour of the Diploma Programme.</p>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl mb-12 flex gap-4 items-start">
+                <i data-lucide="alert-triangle" class="text-amber-500 shrink-0 mt-1 w-5 h-5"></i>
+                <p class="text-amber-800 text-sm leading-relaxed"><strong class="text-amber-600 block mb-1">Under Construction</strong>The IB section is currently being expanded as the academic year progresses. Expect regular updates to the repository.</p>
+            </div>
+
+             <div class="grid lg:grid-cols-3 gap-8 mb-24">
+                <div class="glass-panel p-6 md:p-8 rounded-3xl h-fit animate-fade-in stagger-1">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3"><i data-lucide="layers" class="text-purple-400 w-5 h-5"></i> Core</h3>
+                    <div class="space-y-4">
+                        <a href="https://www.savemyexams.com/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">Save My Exams</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div><p class="text-sm text-slate-500">Essential notes.</p></a>
+                        <a href="https://www.revisiondojo.com/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">Revision Dojo</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div><p class="text-sm text-slate-500">AI Question Bank.</p></a>
+                    </div>
+                </div>
+
+                 <div class="lg:col-span-2 glass-panel p-6 md:p-8 rounded-3xl animate-fade-in stagger-2">
+                    <h3 class="text-xl font-bold text-slate-800 mb-8">Subject Specific</h3>
+                    <div class="grid md:grid-cols-2 gap-10">
+                        <div>
+                            <h4 class="font-bold text-purple-400 mb-4 pb-2 border-b border-slate-100 text-sm tracking-widest uppercase">Geography & Bio</h4>
+                             <div class="space-y-3">
+                                <a href="https://www.ibgeographypods.org/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">IB Geography Pods</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                                <a href="https://bio-letters.com/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">Bio-Letters</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                                <a href="https://phet.colorado.edu/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">PhET Simulations</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-purple-400 mb-4 pb-2 border-b border-slate-100 text-sm tracking-widest uppercase">Chemistry</h4>
+                             <div class="space-y-3">
+                                <a href="https://www.masterorganicchemistry.com/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">Master Organic Chem</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                                <a href="https://www.chemtube3d.com/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">ChemTube3D</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                                <a href="https://ibyourwayout.wordpress.com/" target="_blank" class="block glass-card p-5 rounded-2xl hover:bg-white group"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-lg text-slate-700 group-hover:text-rose-500">IB Your Way Out</h4><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i></div></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUBPAGE: STUDY TIPS -->
+        <section id="study-tips" class="page-section max-w-5xl mx-auto px-4 md:px-6 pt-12 animate-fade-in">
+             <button onclick="navigateTo('igcse')" class="flex items-center gap-2 text-slate-400 hover:text-slate-800 mb-10 transition-colors group">
+                <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i> Back
+            </button>
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-slate-800">The Art of Distinction</h2>
+                <div class="h-1 w-24 bg-rose-200 mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">Success isn't accidental. It's engineered through strategy and discipline.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-16">
+                 <div class="glass-panel p-6 md:p-8 rounded-3xl animate-fade-in stagger-1 relative overflow-hidden bg-white/50">
+                    <div class="absolute top-0 right-0 p-24 bg-rose-100/50 rounded-full blur-3xl -mr-12 -mt-12 pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-3 mb-4 text-rose-500"><i data-lucide="brain" class="w-6 h-6"></i><h3 class="text-2xl font-bold text-slate-800">Active Recall</h3></div>
+                        <p class="text-slate-600 leading-relaxed mb-6">Stop re-reading your notes. It's the illusion of competence. Instead, close the book and force your brain to retrieve information.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3 text-sm text-slate-500"><span class="text-rose-400 font-bold">01.</span><p>Write questions based on your notes, then answer them without looking.</p></div>
+                            <div class="flex items-start gap-3 text-sm text-slate-500"><span class="text-rose-400 font-bold">02.</span><p>Teach the concept to an empty chair (The Feynman Technique).</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="glass-panel p-6 md:p-8 rounded-3xl animate-fade-in stagger-2 relative overflow-hidden bg-white/50">
+                     <div class="absolute top-0 right-0 p-24 bg-blue-100/50 rounded-full blur-3xl -mr-12 -mt-12 pointer-events-none"></div>
+                     <div class="relative z-10">
+                        <div class="flex items-center gap-3 mb-4 text-blue-500"><i data-lucide="clock" class="w-6 h-6"></i><h3 class="text-2xl font-bold text-slate-800">Spaced Repetition</h3></div>
+                        <p class="text-slate-600 leading-relaxed mb-6">Combat the forgetting curve. Review material at increasing intervals to move it from short-term to long-term memory.</p>
+                        <div class="p-4 bg-white/60 rounded-xl border border-slate-100 shadow-sm"><p class="text-sm font-mono text-center text-slate-500">Day 1 <span class="text-rose-400">→</span> Day 3 <span class="text-rose-400">→</span> Day 7 <span class="text-rose-400">→</span> Day 21</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 md:p-10 rounded-3xl mb-16 animate-fade-in stagger-3 border-l-4 border-l-rose-400 bg-white">
+                <div class="flex flex-col md:flex-row gap-8 items-start">
+                    <div class="p-4 bg-rose-50 rounded-2xl shrink-0"><i data-lucide="target" class="text-rose-400 w-10 h-10"></i></div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">The "Paper 6" Mentality</h3>
+                        <p class="text-slate-600 leading-relaxed mb-4">In IGCSE sciences, Paper 6 (Alternative to Practical) is often the easiest to score full marks in, yet many students neglect it. <span class="text-slate-900 font-semibold"> Treat easy marks with the same respect as hard ones.</span></p>
+                        <p class="text-slate-500 italic text-sm">"I only did the stuff from the textbook that was included in the syllabus. The syllabus is your bible. If it's not there, don't learn it."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-24 animate-fade-in stagger-4">
+                <div class="bg-white p-6 rounded-2xl text-center border border-slate-100 shadow-sm hover:shadow-md hover:border-rose-200 transition-all"><i data-lucide="coffee" class="mx-auto mb-3 text-slate-400 w-6 h-6"></i><h4 class="text-slate-800 font-bold mb-1">Deep Work</h4><p class="text-xs text-slate-500">No phone. 90m blocks.</p></div>
+                <div class="bg-white p-6 rounded-2xl text-center border border-slate-100 shadow-sm hover:shadow-md hover:border-rose-200 transition-all"><i data-lucide="shield" class="mx-auto mb-3 text-slate-400 w-6 h-6"></i><h4 class="text-slate-800 font-bold mb-1">Past Papers</h4><p class="text-xs text-slate-500">The only true metric.</p></div>
+                <div class="bg-white p-6 rounded-2xl text-center border border-slate-100 shadow-sm hover:shadow-md hover:border-rose-200 transition-all"><i data-lucide="file-text" class="mx-auto mb-3 text-slate-400 w-6 h-6"></i><h4 class="text-slate-800 font-bold mb-1">Syllabus</h4><p class="text-xs text-slate-500">Your checklist.</p></div>
+                <div class="bg-white p-6 rounded-2xl text-center border border-slate-100 shadow-sm hover:shadow-md hover:border-rose-200 transition-all"><i data-lucide="zap" class="mx-auto mb-3 text-slate-400 w-6 h-6"></i><h4 class="text-slate-800 font-bold mb-1">Sleep</h4><p class="text-xs text-slate-500">Memory consolidation.</p></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white/50 backdrop-blur-md pt-20 pb-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12 mb-16">
+            <div class="col-span-1 md:col-span-2">
+                <div class="flex items-center gap-3 mb-6">
+                    <i data-lucide="book-open" class="text-rose-400 w-5 h-5"></i>
+                    <span class="text-xl font-bold text-slate-800 tracking-widest">IGIB STUDY BRIDGE</span>
+                </div>
+                <p class="text-slate-500 max-w-sm leading-relaxed text-sm">
+                    A non-commercial, student-run educational project designed to help you bridge the gap to your academic goals.
+                </p>
+            </div>
+            
+            <div>
+                <h4 class="text-slate-800 font-bold mb-6">Roadmap</h4>
+                <ul class="space-y-3 text-sm text-slate-500">
+                    <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>Oct 2025: Launch</li>
+                    <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>Dec 2025: Bio 0610</li>
+                    <li class="flex items-center gap-3"><div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>Jan 2026: Experience Tab</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-slate-800 font-bold mb-6">Contact</h4>
+                <div class="flex items-center gap-3 text-slate-500 mb-3 group cursor-pointer">
+                    <i data-lucide="mail" class="w-4 h-4 group-hover:text-rose-400 transition-colors"></i>
+                    <a href="mailto:igibstudybridge@gmail.com" class="group-hover:text-slate-800 transition-colors">igibstudybridge@gmail.com</a>
+                </div>
+                <p class="text-xs text-slate-400">
+                    Managed by a student. Please allow a few days for responses.
+                </p>
+            </div>
+        </div>
+        <div class="text-center text-xs text-slate-400 pt-8 border-t border-slate-200">
+            <p>© 2025 IGIB Study Bridge. Not affiliated with Cambridge Assessment or IB Organization.</p>
+        </div>
+    </footer>
+
+    <!-- Logic -->
+    <script>
+        // Initial Render of Icons
+        lucide.createIcons();
+
+        // Navigation State
+        let currentPage = 'home';
+        
+        function navigateTo(pageId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            
+            // Show target section
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update active state on nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if(btn.dataset.target === pageId || (pageId.includes(btn.dataset.target) && btn.dataset.target !== 'home')) {
+                     btn.classList.add('bg-rose-400', 'text-white', 'shadow-lg', 'shadow-rose-200', 'font-bold', 'transform', 'scale-105');
+                     btn.classList.remove('text-slate-500', 'hover:bg-rose-50');
+                } else {
+                     btn.classList.remove('bg-rose-400', 'text-white', 'shadow-lg', 'shadow-rose-200', 'font-bold', 'transform', 'scale-105');
+                     btn.classList.add('text-slate-500', 'hover:bg-rose-50');
+                }
+            });
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Re-render icons (sometimes needed if content was hidden)
+            setTimeout(() => lucide.createIcons(), 50);
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('flex');
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex');
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        }
+
+        // Scroll Effect for Navbar
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('glass-panel', 'shadow-sm', 'py-3');
+                nav.classList.remove('py-4', 'md:py-8', 'bg-transparent');
+            } else {
+                nav.classList.remove('glass-panel', 'shadow-sm', 'py-3');
+                nav.classList.add('py-4', 'md:py-8', 'bg-transparent');
+            }
+        });
+
+        // Init
+        navigateTo('home');
+    </script>
+</body>
+</html>
